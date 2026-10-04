@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charSet="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" as="image" href="assets/logo.png" />
+    <link rel="preload" as="image" href="assets/dashboard.png" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&amp;display=swap" data-precedence="default" />
+    <link rel="stylesheet" href="style.css" data-precedence="default" />
+    <title>Inventaris — Inventory System for Business | Overkreatif</title>
+    <meta name="author" content="Overkreatif" />
+    <meta name="description" content="A simple inventory system for managing products, stock, warehouses, item movements, stocktaking, and reports in one place." />
+    <meta name="keywords" content="inventory system, stock management, warehouse management, stocktaking, inventory reports, business inventory" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Inventaris — Inventory System for Business | Overkreatif" />
+    <meta property="og:description" content="A simple inventory system for managing products, stock, warehouses, item movements, stocktaking, and reports in one place." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="/" />
+    <meta property="og:site_name" content="Overkreatif" />
+    <meta property="og:locale" content="id_ID" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Inventaris — Inventory System for Business | Overkreatif" />
+    <meta name="twitter:description" content="A simple inventory system for managing products, stock, warehouses, item movements, stocktaking, and reports in one place." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="canonical" href="/" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Inventaris",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "A simple inventory system for managing products, stock, warehouses, item movements, stocktaking, and reports in one place.",
+      "inLanguage": "id-ID",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Overkreatif",
+        "email": "hello@overkreatif.com"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "What is Inventaris?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Inventaris is an inventory system for managing products, stock, warehouses, item movements, stocktaking, and reports in one system."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What businesses are a good fit for Inventaris?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Retailers, distributors, warehouses, and growing businesses that want to digitize inventory without adopting a complex enterprise system."
+        }
+      }]
+    }
+    </script>
+    <style>
+    @font-face {
+      font-family: 'CameraPlainVariable';
+      src: url('https://cdn.gpteng.co/mcp-widgets/v1/fonts/CameraPlainVariable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    #lovable-badge {
+      --badge-bg: #1b1b1b;
+      --badge-text: #c5c1b9;
+      --badge-text-hover: #dcdad5;
+      --badge-radius: 6px;
+      --badge-padding: 8px;
+      --badge-gap: 6px;
+      --badge-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.88),
+        0 1px 0 0 rgba(0, 0, 0, 0.04),
+        0 2px 2px -1px rgba(0, 0, 0, 0.08),
+        0 4px 4px -2px rgba(0, 0, 0, 0.08),
+        0 8px 8px -4px rgba(0, 0, 0, 0.08),
+        0 16px 16px -8px rgba(0, 0, 0, 0.08);
+      --badge-transition-duration: 0.2s;
+      --badge-transition-easing: cubic-bezier(0.16, 1, 0.32, 1);
+      --focus-color: #575ECF;
+      --focus-offset: 2px;
+      --focus-width: 2px;
+
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      z-index: 1000000;
+      background-color: var(--badge-bg) !important;
+      color: var(--badge-text) !important;
+      border-radius: var(--badge-radius);
+      box-shadow: var(--badge-shadow) !important;
+      font-size: 12px;
+      font-family: CameraPlainVariable, "CameraPlainVariable Fallback", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 400 !important;
+      text-transform: none !important;
+      font-feature-settings: normal !important;
+      transform: translateZ(0);
+      will-change: transform, opacity;
+    }
+
+    #lovable-badge-cta {
+      display: flex;
+      align-items: center;
+      gap: var(--badge-gap);
+      padding: 0 var(--badge-padding);
+      height: 100%;
+      color: inherit;
+      text-decoration: none;
+      white-space: nowrap;
+      border-radius: var(--badge-radius) 0 0 var(--badge-radius);
+      transition:
+        background-color var(--badge-transition-duration) ease,
+        color var(--badge-transition-duration) ease,
+        transform 0.1s ease;
+    }
+
+    #lovable-badge-cta:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--badge-text-hover);
+    }
+
+    #lovable-badge-cta:active {
+      transform: scale(0.98);
+    }
+
+    #lovable-badge-cta:focus {
+      outline: none;
+    }
+
+    #lovable-badge-cta:focus-visible {
+      outline: var(--focus-width) solid var(--focus-color);
+      outline-offset: var(--focus-offset);
+      z-index: 1;
+    }
+
+    #lovable-badge-text {
+      line-height: 1;
+    }
+
+    #lovable-badge-divider {
+      width: 1px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.04);
+      flex-shrink: 0;
+    }
+
+    #lovable-badge-close {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      min-height: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0 var(--badge-radius) var(--badge-radius) 0;
+      flex-shrink: 0;
+      transition:
+        background-color var(--badge-transition-duration) ease,
+        transform 0.1s ease;
+    }
+
+    #lovable-badge-close:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    #lovable-badge-close:active {
+      transform: scale(0.92);
+    }
+
+    #lovable-badge-close:focus {
+      outline: none;
+    }
+
+    #lovable-badge-close:focus-visible {
+      outline: var(--focus-width) solid var(--focus-color);
+      outline-offset: calc(var(--focus-offset) * -1);
+      z-index: 1;
+    }
+
+    #lovable-badge-close svg path {
+      fill: var(--badge-text);
+      transition: fill var(--badge-transition-duration) ease;
+    }
+
+    #lovable-badge-close:hover svg path {
+      fill: var(--badge-text-hover);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      #lovable-badge-cta,
+      #lovable-badge-close,
+      #lovable-badge-close svg path {
+        transition: none;
+      }
+
+      #lovable-badge-cta:active,
+      #lovable-badge-close:active {
+        transform: none;
+      }
+    }
+
+    @media (prefers-contrast: high) {
+      #lovable-badge {
+        --badge-bg: #000;
+        --badge-text: #fff;
+        --badge-text-hover: #fff;
+        border: 2px solid currentColor;
+      }
+
+      #lovable-badge-cta:focus-visible,
+      #lovable-badge-close:focus-visible {
+        outline-width: 3px;
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.from-left {
+      transform: translateX(-42px);
+    }
+
+    .reveal.from-right {
+      transform: translateX(42px);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .reveal-stagger > .reveal-item {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 550ms ease, transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: calc(var(--reveal-index, 0) * 80ms);
+    }
+
+    .reveal-stagger.is-visible > .reveal-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal,
+      .reveal-stagger > .reveal-item {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+    </style>
+    <script defer src="/~flock.js" data-proxy-url="/~api/analytics"></script>
+    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6a57e5ce8beb52db7c25683c900b2631/id-preview-3bef95e7--6f61c06b-30a7-4646-94b4-d454657d88d7.lovable.app-1786818990887.png">
+    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6a57e5ce8beb52db7c25683c900b2631/id-preview-3bef95e7--6f61c06b-30a7-4646-94b4-d454657d88d7.lovable.app-1786818990887.png">
+  </head>
+
+  <body>
+    <!--$-->
+    <div class="min-h-screen bg-paper text-ink">
+      <header class="sticky top-0 z-50 border-b border-border bg-paper/95 backdrop-blur-xl">
+        <div class="mx-auto grid w-[min(1240px,100%-2rem)] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-3 sm:py-4 lg:grid-cols-[1fr_auto_1fr]"><a href="#top" class="min-w-0"><img src="assets/logo.png" alt="Overkreatif" style="width:100px;height:auto" /></a>
+          <nav class="items-center gap-1 border border-border bg-card p-1 lg:flex rounded-full hidden"><a href="#masalah" class="rounded-full px-4 py-2 text-[13px] font-extrabold text-muted-foreground transition-colors hover:bg-brand-soft hover:text-brand">Challenges</a><a href="#fitur" class="rounded-full px-4 py-2 text-[13px] font-extrabold text-muted-foreground transition-colors hover:bg-brand-soft hover:text-brand">Features</a><a href="#produk" class="rounded-full px-4 py-2 text-[13px] font-extrabold text-muted-foreground transition-colors hover:bg-brand-soft hover:text-brand">Product</a><a href="#cara-kerja" class="rounded-full px-4 py-2 text-[13px] font-extrabold text-muted-foreground transition-colors hover:bg-brand-soft hover:text-brand">How It Works</a><a href="#cocok" class="rounded-full px-4 py-2 text-[13px] font-extrabold text-muted-foreground transition-colors hover:bg-brand-soft hover:text-brand">Who It's For</a></nav>
+          <div class="flex items-center justify-end gap-2"><a href="#demo" class="rounded-lg bg-brand px-3.5 py-2.5 text-[13px] font-black text-primary-foreground transition-transform hover:-translate-y-0.5 sm:px-4">Request Demo</a><button type="button" aria-label="Open menu" aria-expanded="false" class="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-border bg-card lg:hidden"><span class="relative block h-3.5 w-4"><span class="absolute left-0 block h-0.5 w-4 bg-ink transition-transform top-0"></span><span class="absolute left-0 top-1.5 block h-0.5 w-4 bg-ink transition-opacity "></span><span class="absolute left-0 block h-0.5 w-4 bg-ink transition-transform top-3"></span></span></button></div>
+        </div>
+      </header>
+      <main id="top">
+        <section class="border-b border-border pt-12 pb-0 sm:pt-24">
+          <div class="mx-auto w-[min(1240px,100%-2rem)] text-center">
+            <div class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-black tracking-[0.14em] text-brand sm:px-4 sm:text-[12px]">OVERKREATIF · DIGITAL PRODUCT</div>
+            <h1 class="display-xl mx-auto mt-6 max-w-[16ch] sm:mt-8">A <span class="text-brand">clearer</span> inventory, <br>a more controlled business.</h1>
+            <p class="mx-auto mt-6 max-w-[62ch] text-base leading-relaxed text-muted-foreground sm:mt-7 sm:text-xl">An inventory system that helps businesses manage products, stock, warehouses, item movements, stocktaking, and reports in one place.</p>
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center"><a href="#produk" class="rounded-lg bg-brand px-6 py-3.5 text-[15px] font-black text-primary-foreground transition-transform hover:-translate-y-0.5">View Product</a><a href="#fitur" class="rounded-lg border border-ink px-6 py-3.5 text-[15px] font-black transition-colors hover:bg-ink hover:text-ink-surface-foreground">Explore Features</a></div>
+            <p class="mt-6 text-[13px] font-semibold text-muted-foreground">Simple system · Clear information · Practical operation</p>
+          </div>
+          <div class="mx-auto mt-12 w-[min(1240px,100%-2rem)] sm:mt-16">
+            <div class="relative">
+              <div class="border border-b-0 border-border bg-ink-surface p-2 shadow-[0_-10px_80px_-30px_rgba(0,0,0,0.5)] sm:p-3 rounded-2xl">
+                <div class="overflow-x-auto"><img src="assets/dashboard.png" alt="Inventaris dashboard showing stock and item movement summaries" class="w-full" /></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="overflow-hidden border-b border-border bg-ink-surface py-4 text-ink-surface-foreground">
+          <div class="animate-marquee flex w-max gap-10 whitespace-nowrap"><span class="flex items-center gap-10 text-sm font-black tracking-tight">Master Data<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Barang Masuk<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Barang Keluar<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Adjustment<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Transfer Gudang<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Stock Opname<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Dashboard<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Laporan<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Export<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Master Data<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Barang Masuk<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Barang Keluar<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Adjustment<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Transfer Gudang<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Stock Opname<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Dashboard<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Laporan<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span><span class="flex items-center gap-10 text-sm font-black tracking-tight">Export<span class="h-1.5 w-1.5 rounded-full bg-brand"></span></span></div>
+        </div>
+        <section id="masalah" class="border-b border-border py-16 sm:py-24 lg:py-32">
+          <div class="mx-auto grid w-[min(1240px,100%-2rem)] gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+            <div class="lg:sticky lg:top-28 lg:self-start">
+              <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>01
+                <!-- --> /
+                <!-- -->CHALLENGES</div>
+              <h2 class="display-lg mt-6">Still relying on spreadsheets?</h2>
+              <p class="mt-6 max-w-[46ch] text-lg leading-relaxed text-muted-foreground">Inventory grows, warehouses grow, and transactions grow. What often gets left behind is visibility.</p>
+            </div>
+            <div class="divide-y divide-border border-t border-border">
+              <div class="group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8 transition-colors hover:bg-card"><span class="text-sm font-black text-brand">01</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Stock is hard to track</h3>
+                  <p class="mt-2 leading-relaxed text-muted-foreground">Data is scattered, and checking stock conditions still takes too many steps.</p>
+                </div>
+              </div>
+              <div class="group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8 transition-colors hover:bg-card"><span class="text-sm font-black text-brand">02</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Movements lack structure</h3>
+                  <p class="mt-2 leading-relaxed text-muted-foreground">Inbound items, outbound items, adjustments, and transfers need a clear history.</p>
+                </div>
+              </div>
+              <div class="group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8 transition-colors hover:bg-card"><span class="text-sm font-black text-brand">03</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Decisions take longer</h3>
+                  <p class="mt-2 leading-relaxed text-muted-foreground">Inventory data should make it clear what needs attention right now.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="fitur" class="bg-ink-surface py-16 text-ink-surface-foreground sm:py-24 lg:py-32">
+          <div class="mx-auto w-[min(1240px,100%-2rem)]">
+            <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>02
+                  <!-- --> /
+                  <!-- -->SOLUTION</div>
+                <h2 class="display-lg mt-6 max-w-[14ch]">All your inventory. One system.</h2>
+              </div>
+              <p class="max-w-[44ch] leading-relaxed text-white/60">Inventaris brings essential operational needs into a simpler, easier-to-understand workflow.</p>
+            </div>
+            <div class="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-brand hover:bg-white/[0.06] lg:col-span-2">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="text-2xl">Master Data</h3><span class="text-3xl font-black tracking-tighter text-brand">01</span>
+                </div>
+                <p class="mt-3 max-w-[44ch] leading-relaxed text-white/55">Manage products, categories, suppliers, and warehouses in one data structure.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-brand hover:bg-white/[0.06] ">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="text-2xl">Stock Movements</h3><span class="text-3xl font-black tracking-tighter text-brand">02</span>
+                </div>
+                <p class="mt-3 max-w-[44ch] leading-relaxed text-white/55">Record inbound items, outbound items, adjustments, and stock transfers.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-brand hover:bg-white/[0.06] \">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="text-2xl">Stocktaking</h3><span class="text-3xl font-black tracking-tighter text-brand">03</span>
+                </div>
+                <p class="mt-3 max-w-[44ch] leading-relaxed text-white/55">Compare system stock with physical counts and see the difference.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-brand hover:bg-white/[0.06] \">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="text-2xl">Dashboard</h3><span class="text-3xl font-black tracking-tighter text-brand">04</span>
+                </div>
+                <p class="mt-3 max-w-[44ch] leading-relaxed text-white/55">See total products, suppliers, warehouses, stock, activity, and low-stock items.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-brand hover:bg-white/[0.06] \">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="text-2xl">Reports</h3><span class="text-3xl font-black tracking-tighter text-brand">05</span>
+                </div>
+                <p class="mt-3 max-w-[44ch] leading-relaxed text-white/55">Review stock conditions and the history of inbound, outbound, and transfer activity.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-brand hover:bg-white/[0.06] lg:col-span-2">
+                <div class="flex items-baseline justify-between gap-4">
+                  <h3 class="text-2xl">Export</h3><span class="text-3xl font-black tracking-tighter text-brand">06</span>
+                </div>
+                <p class="mt-3 max-w-[44ch] leading-relaxed text-white/55">Use search, date filters, and exports for your reporting needs.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="produk" class="border-b border-border py-16 sm:py-24 lg:py-32">
+          <div class="mx-auto w-[min(1240px,100%-2rem)]">
+            <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>03
+              <!-- --> /
+              <!-- -->PRODUCT</div>
+            <h2 class="display-lg mt-6">See the system in action.</h2>
+            <p class="mt-6 max-w-[70ch] text-lg leading-relaxed text-muted-foreground">The interface is built for operational work: important information is easy to find, tables are easy to scan, and inventory activity stays structured.</p>
+            <div class="mt-12 space-y-14 sm:mt-16 sm:space-y-20">
+              <div class="grid items-center gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+                <div class=""><span class="text-sm font-black text-brand">01</span>
+                  <h3 class="mt-3 text-3xl sm:text-4xl">Dashboard</h3>
+                  <p class="mt-4 max-w-[46ch] leading-relaxed text-muted-foreground">Inventory summaries, item movements, low-stock alerts, warehouse distribution, and recent activity on one screen.</p>
+                </div>
+                <div class="border border-border bg-ink-surface p-2 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] sm:p-2.5 rounded-2xl">
+                  <div class="overflow-x-auto"><img src="assets/dashboard.png" alt="Inventaris dashboard page" class="w-full" /></div>
+                </div>
+              </div>
+              <div class="grid items-center gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+                <div class="lg:order-2"><span class="text-sm font-black text-brand">02</span>
+                  <h3 class="mt-3 text-3xl sm:text-4xl">Products</h3>
+                  <p class="mt-4 max-w-[46ch] leading-relaxed text-muted-foreground">Manage SKUs, categories, suppliers, warehouses, prices, stock, and status in one easy-to-scan table.</p>
+                </div>
+                <div class="border border-border bg-ink-surface p-2 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] sm:p-2.5 rounded-2xl">
+                  <div class="overflow-x-auto"><img src="assets/produk.png" alt="Inventaris products page" class="w-full" loading="lazy" /></div>
+                </div>
+              </div>
+              <div class="grid items-center gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+                <div class=""><span class="text-sm font-black text-brand">03</span>
+                  <h3 class="mt-3 text-3xl sm:text-4xl">Inbound Items</h3>
+                  <p class="mt-4 max-w-[46ch] leading-relaxed text-muted-foreground">Record incoming items by supplier, warehouse, reference, and item.</p>
+                </div>
+                <div class="border border-border bg-ink-surface p-2 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] sm:p-2.5 rounded-2xl">
+                  <div class="overflow-x-auto"><img src="assets/barang-masuk.png" alt="Inventaris inbound items page" class="w-full" loading="lazy" /></div>
+                </div>
+              </div>
+              <div class="grid items-center gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+                <div class="lg:order-2"><span class="text-sm font-black text-brand">04</span>
+                  <h3 class="mt-3 text-3xl sm:text-4xl">Stock Reports</h3>
+                  <p class="mt-4 max-w-[46ch] leading-relaxed text-muted-foreground">See SKU counts, total items, total inventory value, and stock details by product and warehouse.</p>
+                </div>
+                <div class="border border-border bg-ink-surface p-2 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] sm:p-2.5 rounded-2xl">
+                  <div class="overflow-x-auto"><img src="assets/laporan.png" alt="Inventaris stock reports page" class="w-full" loading="lazy" /></div>
+                </div>
+              </div>
+            </div>
+            <p class="mt-6 text-[13px] font-semibold text-muted-foreground lg:hidden">The interface is optimized for desktop screens.</p>
+          </div>
+        </section>
+        <section id="cara-kerja" class="border-b border-border py-16 sm:py-24 lg:py-32">
+          <div class="mx-auto w-[min(1240px,100%-2rem)]">
+            <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>04
+              <!-- --> /
+              <!-- -->HOW IT WORKS</div>
+            <h2 class="display-lg mt-6 max-w-[18ch]">Make operations more structured.</h2>
+            <div class="mt-14 border-l-2 border-border pl-6 sm:pl-10">
+              <div class="relative pb-12 last:pb-0"><span class="absolute -left-[calc(1.5rem+7px)] top-2 h-3 w-3 rounded-full bg-brand ring-4 ring-paper sm:-left-[calc(2.5rem+7px)]"></span>
+                <div class="text-[13px] font-black tracking-[0.14em] text-brand">01
+                  <!-- --> /
+                  <!-- -->MASTER DATA</div>
+                <div class="mt-3 grid gap-4 lg:grid-cols-[0.6fr_1fr] lg:items-baseline">
+                  <h3 class="text-3xl sm:text-4xl">Set up your data</h3>
+                  <p class="max-w-[52ch] leading-relaxed text-muted-foreground">Add products, categories, suppliers, and warehouses so your inventory has a consistent structure.</p>
+                </div>
+              </div>
+              <div class="relative pb-12 last:pb-0"><span class="absolute -left-[calc(1.5rem+7px)] top-2 h-3 w-3 rounded-full bg-brand ring-4 ring-paper sm:-left-[calc(2.5rem+7px)]"></span>
+                <div class="text-[13px] font-black tracking-[0.14em] text-brand">02
+                  <!-- --> /
+                  <!-- -->TRANSACTIONS</div>
+                <div class="mt-3 grid gap-4 lg:grid-cols-[0.6fr_1fr] lg:items-baseline">
+                  <h3 class="text-3xl sm:text-4xl">Record movements</h3>
+                  <p class="max-w-[52ch] leading-relaxed text-muted-foreground">Every inbound item, outbound item, adjustment, and transfer is recorded as inventory activity.</p>
+                </div>
+              </div>
+              <div class="relative pb-12 last:pb-0"><span class="absolute -left-[calc(1.5rem+7px)] top-2 h-3 w-3 rounded-full bg-brand ring-4 ring-paper sm:-left-[calc(2.5rem+7px)]"></span>
+                <div class="text-[13px] font-black tracking-[0.14em] text-brand">03
+                  <!-- --> /
+                  <!-- -->CONTROL</div>
+                <div class="mt-3 grid gap-4 lg:grid-cols-[0.6fr_1fr] lg:items-baseline">
+                  <h3 class="text-3xl sm:text-4xl">Monitor and evaluate</h3>
+                  <p class="max-w-[52ch] leading-relaxed text-muted-foreground">Use the dashboard, stocktaking, and reports to understand inventory conditions and take action.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="cocok" class="bg-ink-surface py-16 text-ink-surface-foreground sm:py-24 lg:py-32">
+          <div class="mx-auto w-[min(1240px,100%-2rem)]">
+            <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>05
+              <!-- --> /
+              <!-- -->WHO IT'S FOR</div>
+            <h2 class="display-lg mt-6 max-w-[18ch]">Built for businesses that want more clarity.</h2>
+            <div class="mt-14 grid gap-3 sm:grid-cols-2">
+              <div class="rounded-2xl group grid grid-cols-[auto_minmax(0,1fr)] gap-6 border border-white/10 p-8 transition-colors hover:border-brand"><span class="text-sm font-black text-brand">01</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Retail</h3>
+                  <p class="mt-2 leading-relaxed text-white/55">Manage multiple SKUs and track stock with greater structure.</p>
+                </div>
+              </div>
+              <div class="rounded-2xl group grid grid-cols-[auto_minmax(0,1fr)] gap-6 border border-white/10 p-8 transition-colors hover:border-brand"><span class="text-sm font-black text-brand">02</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Distributor</h3>
+                  <p class="mt-2 leading-relaxed text-white/55">Control inbound items, outbound items, and transfers between warehouses.</p>
+                </div>
+              </div>
+              <div class="rounded-2xl group grid grid-cols-[auto_minmax(0,1fr)] gap-6 border border-white/10 p-8 transition-colors hover:border-brand"><span class="text-sm font-black text-brand">03</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Warehouse</h3>
+                  <p class="mt-2 leading-relaxed text-white/55">Build visibility into physical and system stock.</p>
+                </div>
+              </div>
+              <div class="rounded-2xl group grid grid-cols-[auto_minmax(0,1fr)] gap-6 border border-white/10 p-8 transition-colors hover:border-brand"><span class="text-sm font-black text-brand">04</span>
+                <div class="min-w-0">
+                  <h3 class="text-2xl">Growing Business</h3>
+                  <p class="mt-2 leading-relaxed text-white/55">Start digitizing inventory without immediately adopting a complex enterprise system.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="border-b border-border py-16 sm:py-24 lg:py-32">
+          <div class="mx-auto w-[min(1240px,100%-2rem)]">
+            <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>06
+              <!-- --> /
+              <!-- -->BEFORE / AFTER</div>
+            <h2 class="display-lg mt-6">From scattered to structured.</h2>
+            <div class="mt-12 overflow-hidden border border-border md:grid md:grid-cols-2">
+              <div class="bg-secondary p-8 sm:p-12">
+                <div class="text-[13px] font-black tracking-[0.14em] text-muted-foreground">BEFORE</div>
+                <h3 class="mt-8 text-4xl sm:text-5xl">Scattered data.</h3>
+                <ul class="mt-8 space-y-3 text-muted-foreground">
+                  <li class="flex gap-3 border-b border-border pb-3 font-semibold"><span>—</span>Separate spreadsheets</li>
+                  <li class="flex gap-3 border-b border-border pb-3 font-semibold"><span>—</span>Manual checking</li>
+                  <li class="flex gap-3 border-b border-border pb-3 font-semibold"><span>—</span>History is hard to trace</li>
+                  <li class="flex gap-3 border-b border-border pb-3 font-semibold"><span>—</span>Low stock is discovered too late</li>
+                </ul>
+              </div>
+              <div class="bg-brand p-8 text-primary-foreground sm:p-12">
+                <div class="text-[13px] font-black tracking-[0.14em] text-white/70">AFTER</div>
+                <h3 class="mt-8 text-4xl sm:text-5xl">One system.</h3>
+                <ul class="mt-8 space-y-3">
+                  <li class="flex gap-3 border-b border-white/25 pb-3 font-semibold"><span>+</span>Centralized master data</li>
+                  <li class="flex gap-3 border-b border-white/25 pb-3 font-semibold"><span>+</span>Recorded movements</li>
+                  <li class="flex gap-3 border-b border-white/25 pb-3 font-semibold"><span>+</span>Clearer stocktaking</li>
+                  <li class="flex gap-3 border-b border-white/25 pb-3 font-semibold"><span>+</span>Dashboard and reports ready to use</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="demo" class="bg-brand py-20 text-primary-foreground sm:py-28 lg:py-36">
+          <div class="mx-auto w-[min(1000px,100%-2rem)] text-center">
+            <div class="text-[13px] font-black tracking-[0.14em] text-white/70">07 / OVERKREATIF PRODUCT</div>
+            <h2 class="display-lg mt-6">It is time to move beyond spreadsheets.</h2>
+            <p class="mx-auto mt-6 max-w-[60ch] text-lg leading-relaxed text-white/80">Build a simpler, clearer inventory system that fits your business operations.</p><a href="mailto:overkreatif@gmail.com" class="mt-9 inline-block rounded-lg bg-card px-7 py-4 text-[15px] font-black text-ink transition-transform hover:-translate-y-0.5">Request Demo</a>
+          </div>
+        </section>
+      </main>
+      <footer class="bg-ink py-10 text-ink-surface-foreground">
+        <div class="mx-auto flex w-[min(1240px,100%-2rem)] flex-col items-start justify-between gap-6 sm:flex-row sm:items-center"><img src="assets/logo.png" alt="Overkreatif" class="brightness-0 invert" style="width:100px;height:auto" />
+          <div class="flex flex-wrap gap-6 text-[13px] font-extrabold text-white/60"><a href="#masalah" class="hover:text-white">Challenges</a><a href="#fitur" class="hover:text-white">Features</a><a href="#produk" class="hover:text-white">Product</a><a href="#cara-kerja" class="hover:text-white">How It Works</a><a href="#cocok" class="hover:text-white">Who It's For</a></div><small class="text-white/45">
+          Digital Product by <a href="../index.html" class="text-white/65 transition-colors hover:text-white">Overkreatif</a>
+        </div>
+      </footer>
+    </div>
+    <script>
+    (function(a, f) {
+      let l;
+      try {
+        l = JSON.parse(sessionStorage.getItem(a) || "{}")
+      } catch {
+        return
+      }
+      const n = l?. [f || history.state?.__TSR_key];
+      let c = !1;
+      for (const t in n) {
+        const e = n[t],
+          o = e?.scrollX,
+          s = e?.scrollY;
+        if (Number.isFinite(o) && Number.isFinite(s)) {
+          if (t === "window") scrollTo(o, s), c = !0;
+          else if (t) try {
+            const r = document.querySelector(t);
+            r && (r.scrollLeft = o, r.scrollTop = s)
+          } catch {}
+        }
+      }
+      if (c) return;
+      const i = location.hash.slice(1);
+      if (i) {
+        const t = history.state?.__hashScrollIntoViewOptions ?? !0;
+        if (t) {
+          const e = document.getElementById(i);
+          e && e.scrollIntoView(t)
+        }
+        return
+      }
+      scrollTo(0, 0)
+    })("tsr-scroll-restoration-v1_3");
+    document.currentScript.remove()
+    </script>
+    <!--/$-->
+    <script class="$tsr" id="$tsr-stream-barrier">
+    (self.$R = self.$R || {})["tsr"] = [];
+    self.$_TSR = {
+      h() {
+        this.hydrated = !0, this.c()
+      },
+      e() {
+        this.streamEnded = !0, this.c()
+      },
+      c() {
+        this.hydrated && this.streamEnded && (delete self.$_TSR, delete self.$R.tsr)
+      },
+      p(e) {
+        this.initialized ? e() : this.buffer.push(e)
+      },
+      buffer: []
+    };
+    $_TSR.router = ($R => $R[0] = {
+      manifest: $R[1] = {
+        routes: $R[2] = {
+          __root__: $R[3] = {
+            preloads: $R[4] = ["/assets/index-BFR4AFAl.js"],
+            scripts: $R[5] = [$R[6] = {
+              attrs: $R[7] = {
+                type: "module",
+                async: !0,
+                src: "/assets/index-BFR4AFAl.js"
+              }
+            }]
+          },
+          "/": $R[8] = {
+            preloads: $R[9] = ["/assets/routes-CWj4M20Q.js"]
+          }
+        }
+      },
+      matches: $R[10] = [$R[11] = {
+        i: "__root__",
+        u: 1786820659241,
+        s: "success",
+        ssr: !0
+      }, $R[12] = {
+        i: "",
+        u: 1786820659241,
+        s: "success",
+        ssr: !0
+      }],
+      lastMatchId: ""
+    })($R["tsr"]);
+    $_TSR.e();
+    document.currentScript.remove()
+    </script>
+    <script type="module" async="" src="/assets/index-BFR4AFAl.js"></script>
+    <script>
+    // Don't show the lovable-badge if the page is in an iframe or if it's being rendered by puppeteer (screenshot service)
+    if (window.self !== window.top || navigator.userAgent.includes('puppeteer')) {
+      var badge = document.getElementById('lovable-badge');
+      if (badge) {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Add click event listener to close button with animation
+    var closeButton = document.getElementById('lovable-badge-close');
+    if (closeButton) {
+      closeButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var badge = document.getElementById('lovable-badge');
+        if (badge) {
+          badge.classList.add('closing');
+          setTimeout(function() {
+            if (badge) {
+              badge.style.display = 'none';
+            }
+          }, 240);
+        }
+      });
+    }
+    </script>
+    <style>
+    /* Mobile overlay menu and animations to match provided design */
+    @media (max-width: 1023px) {
+      header.mobile-open nav {
+        position: fixed !important;
+        top: 73px;
+        left: 0;
+        right: 0;
+        display: block !important;
+        background: var(--paper, #fff);
+        padding: 0.5rem 0 !important;
+        z-index: 60;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0 !important;
+      }
+
+      /* base (hidden) state for overlay when not open */
+      nav.mobile-overlay {
+        display: block !important;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: opacity 240ms cubic-bezier(0.4, 0, 0.2, 1), transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: opacity, transform;
+        backface-visibility: hidden;
+        perspective: 1000px;
+        border-radius: 0 !important;
+      }
+
+      /* visible state */
+      nav.mobile-overlay.mobile-visible {
+        opacity: 1;
+        transform: translateY(0);
+        border-radius:0
+      }
+
+      header.mobile-open nav a {
+        display: block;
+        padding: 1.25rem 1.25rem;
+        border-bottom: 1px solid rgba(0,0,0,0.07);
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: inherit;
+        text-align: left;
+      }
+
+      /* preserve header at top so X stays visible */
+      header {
+        z-index: 70;
+      }
+
+      /* simple transform for hamburger -> X button */
+      button.menu-toggle{transition: transform 240ms cubic-bezier(0.4, 0, 0.2, 1);}
+      button.menu-toggle.open{transform: rotate(90deg);}
+    }
+    </style>
+    <script>
+    (function() {
+      var menuButton = document.querySelector('button[aria-label="Open menu"]');
+      var nav = document.querySelector('header nav');
+      var header = document.querySelector('header');
+      if (!menuButton || !nav || !header) return;
+
+      // mark button for styling
+      menuButton.classList.add('menu-toggle');
+
+      var originalButtonHTML = menuButton.innerHTML;
+      var xIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+
+      // helper to show overlay with animation
+      function showNav() {
+        // ensure nav is available and prepared for transition
+        //nav.classList.remove('hidden');
+        //nav.classList.add('mobile-overlay');
+        // allow browser to paint then add visible class
+        requestAnimationFrame(function() {
+          nav.classList.add('mobile-visible');
+        });
+        header.classList.add('mobile-open');
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuButton.classList.add('open');
+        // swap icon
+        menuButton.innerHTML = xIcon;
+      }
+
+      function hideNav() {
+        // start hiding animation
+        nav.classList.remove('mobile-visible');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.classList.remove('open');
+        // restore icon immediately (keeps X->hamburger smooth)
+        menuButton.innerHTML = originalButtonHTML;
+        header.classList.remove('mobile-open');
+        // after transition ends, fully hide the nav
+        var onEnd = function() {
+          nav.classList.remove('mobile-overlay');
+          nav.classList.add('hidden');
+          nav.removeEventListener('transitionend', onEnd);
+        };
+        nav.addEventListener('transitionend', onEnd);
+        // safety fallback in case transitionend doesn't fire
+        setTimeout(function() {
+          if (nav.classList.contains('mobile-overlay') && !nav.classList.contains('mobile-visible')) {
+            nav.classList.remove('mobile-overlay');
+            nav.classList.add('hidden');
+          }
+        }, 300);
+      }
+
+      function toggleMenu(e) {
+        e.stopPropagation();
+        var expanded = menuButton.getAttribute('aria-expanded') === 'true';
+        if (expanded) hideNav();
+        else showNav();
+      }
+
+      menuButton.addEventListener('click', toggleMenu);
+
+      // Close when clicking outside (only relevant on small screens)
+      document.addEventListener('click', function(e) {
+        if (!menuButton.contains(e.target) && !nav.contains(e.target)) {
+          if (menuButton.getAttribute('aria-expanded') === 'true') hideNav();
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+          hideNav();
+          menuButton.focus();
+        }
+      });
+
+      // Ensure nav visibility syncs on resize (lg breakpoint ~1024px)
+      var mq = window.matchMedia('(min-width: 1024px)');
+      function syncOnResize() {
+        if (mq.matches) {
+          // On large screens nav should be visible (lg:flex) and header shouldn't hold mobile state
+          header.classList.remove('mobile-open');
+          //nav.classList.remove('mobile-overlay');
+          nav.classList.remove('mobile-visible');
+          //nav.classList.remove('hidden');
+          menuButton.setAttribute('aria-expanded', 'false');
+          menuButton.innerHTML = originalButtonHTML;
+        } else {
+          // On small screens keep it hidden by default unless opened
+          if (menuButton.getAttribute('aria-expanded') !== 'true') nav.classList.add('hidden');
+        }
+      }
+      mq.addEventListener ? mq.addEventListener('change', syncOnResize) : mq.addListener(syncOnResize);
+      // initial sync
+      syncOnResize();
+
+      var translationMap = {
+        'Barang Masuk': 'Inbound Items',
+        'Barang Keluar': 'Outbound Items',
+        'Transfer Gudang': 'Warehouse Transfers',
+        'Stock Opname': 'Stocktaking',
+        'Laporan': 'Reports'
+      };
+      var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      var textNode;
+      while (textNode = textWalker.nextNode()) {
+        Object.keys(translationMap).forEach(function(sourceText) {
+          textNode.nodeValue = textNode.nodeValue.replaceAll(sourceText, translationMap[sourceText]);
+        });
+      }
+    })();
+    </script>
+    <script>
+    (function() {
+      var revealObserver = new IntersectionObserver(function(entries, observer) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px' });
+
+      var sections = document.querySelectorAll('main > section');
+      sections.forEach(function(section, index) {
+        section.classList.add('reveal');
+        if (index % 3 === 1) section.classList.add('from-left');
+        if (index % 3 === 2) section.classList.add('from-right');
+        revealObserver.observe(section);
+      });
+
+      var featureGrid = document.querySelector('#fitur .mt-14');
+      if (featureGrid) {
+        featureGrid.classList.add('reveal-stagger');
+        featureGrid.querySelectorAll(':scope > div').forEach(function(item, index) {
+          item.classList.add('reveal-item');
+          item.style.setProperty('--reveal-index', index);
+        });
+        revealObserver.observe(featureGrid);
+      }
+
+      var productRows = document.querySelectorAll('#produk .mt-12 > div');
+      productRows.forEach(function(row, index) {
+        row.classList.add('reveal', index % 2 === 0 ? 'from-left' : 'from-right');
+        revealObserver.observe(row);
+      });
+
+      var timelineItems = document.querySelectorAll('#cara-kerja .mt-14 > div');
+      timelineItems.forEach(function(item, index) {
+        item.classList.add('reveal', index % 2 === 0 ? 'from-left' : 'from-right');
+        revealObserver.observe(item);
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(element) {
+          element.classList.add('is-visible');
+        });
+      }
+    })();
+    </script>
+  </body>
+
+</html>
