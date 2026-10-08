@@ -1,0 +1,30 @@
+# Overkreatif
+
+> Overkreatif is an independent digital agency and technology partner based in Jakarta, Indonesia. It helps businesses build brands and digital products through brand identity, web and mobile development, digital marketing, cybersecurity testing, AI integration, and visual content services.
+
+## Main pages
+
+- [Homepage](https://overkreatif.netlify.app/): Agency overview, services, selected work, digital products, and frequently asked questions.
+- [StockFolio](https://overkreatif.netlify.app/products/stockfolio.html): Web-based inventory system for products, stock, warehouses, item movements, stocktaking, and reports.
+- [BillFolio](https://overkreatif.netlify.app/products/billfolio.html): Web-based invoicing and cash flow software with AI-assisted invoice drafting, client management, payment links, and payment tracking.
+- [RentFolio](https://overkreatif.netlify.app/products/rentfolio.html): Rental catalog and availability management for bridal studios and clothing rental businesses, with date and size availability and WhatsApp inquiries.
+
+## Agency services
+
+- Brand identity
+- Website and web system development
+- Mobile app development
+- Digital marketing
+- Cybersecurity testing
+- AI solutions and integration
+- Photography and videography
+
+## Contact and location
+
+- Location: Jakarta, Indonesia
+- Email: overkreatif@gmail.com
+- [Email Overkreatif](mailto:overkreatif@gmail.com)
+
+## Crawlable resources
+
+- [XML sitemap](https://overkreatif.netlify.app/sitemap.xml)

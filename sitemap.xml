@@ -2,23 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://overkreatif.netlify.app/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  <!-- Jika Anda memiliki halaman/rute lain, tambahkan di sini: -->
-  <!--
   <url>
-    <loc>https://overkreatif.netlify.app/about</loc>
-    <lastmod>2026-07-28</lastmod>
+    <loc>https://overkreatif.netlify.app/products/stockfolio.html</loc>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://overkreatif.netlify.app/portfolio</loc>
-    <lastmod>2026-07-28</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://overkreatif.netlify.app/products/billfolio.html</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  -->
+  <url>
+    <loc>https://overkreatif.netlify.app/products/rentfolio.html</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
