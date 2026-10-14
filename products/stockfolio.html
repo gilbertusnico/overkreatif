@@ -313,7 +313,7 @@
       }
     }
     </style>
-    <script defer src="/~flock.js" data-proxy-url="/~api/analytics"></script>
+
   </head>
 
   <body>
@@ -708,6 +708,88 @@
     </script>
     <style>
     /* Mobile overlay menu and animations to match provided design */
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 5.5rem;
+    }
+
+    main[id], section[id] {
+      scroll-margin-top: 5.5rem;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-brand, #1e49f4);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* Active navbar link (scroll spy, desktop pill nav only) */
+    header > div > nav a.nav-active {
+      background: var(--brand-soft, #e8edff);
+      color: var(--brand, #1e49f4);
+    }
+
+    /* Pause the marquee for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .animate-marquee {
+        animation: none !important;
+      }
+    }
+
+    /* Scroll reveal (progressive enhancement: only active when JS adds html.js) */
+    html.js .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    html.js .reveal.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    html.js .reveal-stagger > div {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: calc(var(--reveal-index, 0) * 80ms);
+    }
+
+    html.js .reveal-stagger.is-visible > div {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html.js .reveal,
+      html.js .reveal-stagger > div {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* Desktop nav pill must win over Tailwind's `.hidden` at lg breakpoint */
+    @media (min-width: 1024px) {
+      header nav {
+        display: flex !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
     @media (max-width: 1023px) {
       header.mobile-open nav {
         position: fixed !important;
@@ -729,9 +811,7 @@
         opacity: 0;
         transform: translateY(-8px);
         transition: opacity 240ms cubic-bezier(0.4, 0, 0.2, 1), transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
-        will-change: opacity, transform;
         backface-visibility: hidden;
-        perspective: 1000px;
         border-radius: 0 !important;
       }
 
@@ -739,7 +819,7 @@
       nav.mobile-overlay.mobile-visible {
         opacity: 1;
         transform: translateY(0);
-        border-radius:0
+        border-radius: 0;
       }
 
       header.mobile-open nav a {
@@ -764,7 +844,7 @@
     </style>
     <script>
     (function() {
-      var menuButton = document.querySelector('button[aria-label="Open menu"]');
+      var menuButton = document.querySelector('button[aria-label="Buka menu"]');
       var nav = document.querySelector('header nav');
       var header = document.querySelector('header');
       if (!menuButton || !nav || !header) return;
@@ -775,17 +855,23 @@
       var originalButtonHTML = menuButton.innerHTML;
       var xIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 
+      function setExpanded(expanded) {
+        menuButton.setAttribute('aria-expanded', String(expanded));
+        menuButton.setAttribute('aria-label', expanded ? 'Tutup menu' : 'Buka menu');
+      }
+
       // helper to show overlay with animation
       function showNav() {
-        // ensure nav is available and prepared for transition
-        //nav.classList.remove('hidden');
-        //nav.classList.add('mobile-overlay');
-        // allow browser to paint then add visible class
-        requestAnimationFrame(function() {
-          nav.classList.add('mobile-visible');
-        });
+        nav.classList.remove('hidden');
+        nav.classList.add('mobile-overlay');
         header.classList.add('mobile-open');
-        menuButton.setAttribute('aria-expanded', 'true');
+        // allow browser to paint the base state, then animate in
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            nav.classList.add('mobile-visible');
+          });
+        });
+        setExpanded(true);
         menuButton.classList.add('open');
         // swap icon
         menuButton.innerHTML = xIcon;
@@ -794,25 +880,31 @@
       function hideNav() {
         // start hiding animation
         nav.classList.remove('mobile-visible');
-        menuButton.setAttribute('aria-expanded', 'false');
+        setExpanded(false);
         menuButton.classList.remove('open');
         // restore icon immediately (keeps X->hamburger smooth)
         menuButton.innerHTML = originalButtonHTML;
         header.classList.remove('mobile-open');
         // after transition ends, fully hide the nav
-        var onEnd = function() {
+        var finishHide = function() {
           nav.classList.remove('mobile-overlay');
-          nav.classList.add('hidden');
+          if (window.matchMedia('(min-width: 1024px)').matches === false) {
+            nav.classList.add('hidden');
+          }
+        };
+        var onEnd = function(e) {
+          if (e.target !== nav) return;
           nav.removeEventListener('transitionend', onEnd);
+          finishHide();
         };
         nav.addEventListener('transitionend', onEnd);
         // safety fallback in case transitionend doesn't fire
         setTimeout(function() {
           if (nav.classList.contains('mobile-overlay') && !nav.classList.contains('mobile-visible')) {
-            nav.classList.remove('mobile-overlay');
-            nav.classList.add('hidden');
+            nav.removeEventListener('transitionend', onEnd);
+            finishHide();
           }
-        }, 300);
+        }, 320);
       }
 
       function toggleMenu(e) {
@@ -823,6 +915,13 @@
       }
 
       menuButton.addEventListener('click', toggleMenu);
+
+      // Close when tapping a menu link so the overlay doesn't linger over content
+      nav.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (menuButton.getAttribute('aria-expanded') === 'true') hideNav();
+        });
+      });
 
       // Close when clicking outside (only relevant on small screens)
       document.addEventListener('click', function(e) {
@@ -843,16 +942,18 @@
       var mq = window.matchMedia('(min-width: 1024px)');
       function syncOnResize() {
         if (mq.matches) {
-          // On large screens nav should be visible (lg:flex) and header shouldn't hold mobile state
+          // On large screens nav should be visible and header shouldn't hold mobile state
           header.classList.remove('mobile-open');
-          //nav.classList.remove('mobile-overlay');
-          nav.classList.remove('mobile-visible');
-          //nav.classList.remove('hidden');
-          menuButton.setAttribute('aria-expanded', 'false');
+          nav.classList.remove('mobile-overlay', 'mobile-visible', 'hidden');
+          setExpanded(false);
+          menuButton.classList.remove('open');
           menuButton.innerHTML = originalButtonHTML;
         } else {
           // On small screens keep it hidden by default unless opened
-          if (menuButton.getAttribute('aria-expanded') !== 'true') nav.classList.add('hidden');
+          if (menuButton.getAttribute('aria-expanded') !== 'true') {
+            nav.classList.remove('mobile-overlay', 'mobile-visible');
+            nav.classList.add('hidden');
+          }
         }
       }
       mq.addEventListener ? mq.addEventListener('change', syncOnResize) : mq.addListener(syncOnResize);
@@ -862,7 +963,59 @@
     })();
     </script>
     <script>
+    // Navbar active-link highlighting on scroll (pill style).
     (function() {
+      var navLinks = Array.prototype.slice.call(
+        document.querySelectorAll('header > div > nav a[href^="#"]')
+      );
+      var spySections = navLinks
+        .map(function(link) { return document.getElementById(link.getAttribute('href').slice(1)); })
+        .filter(Boolean);
+      if (!navLinks.length || !spySections.length) return;
+
+      function setActive(id) {
+        navLinks.forEach(function(link) {
+          var isActive = link.getAttribute('href') === '#' + id;
+          link.classList.toggle('nav-active', isActive);
+          if (isActive) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        });
+      }
+
+      var ticking = false;
+      function updateActive() {
+        ticking = false;
+        var offset = 130; // sticky navbar height + margin
+        var current = '';
+        for (var i = 0; i < spySections.length; i++) {
+          if (spySections[i].getBoundingClientRect().top - offset <= 0) {
+            current = spySections[i].id;
+          }
+        }
+        if (!current && window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
+          current = spySections[spySections.length - 1].id;
+        }
+        setActive(current);
+      }
+      function scheduleUpdate() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updateActive);
+        }
+      }
+      window.addEventListener('scroll', scheduleUpdate, { passive: true });
+      window.addEventListener('resize', scheduleUpdate, { passive: true });
+      updateActive();
+    })();
+    </script>
+    <script>
+    (function() {
+      // Progressive enhancement: reveal styles only apply when html.js is present.
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion || !('IntersectionObserver' in window)) return;
+
+      document.documentElement.classList.add('js');
+
       var revealObserver = new IntersectionObserver(function(entries, observer) {
         entries.forEach(function(entry) {
           if (!entry.isIntersecting) return;
@@ -881,8 +1034,7 @@
       if (featureGrid) {
         featureGrid.classList.add('reveal-stagger');
         featureGrid.querySelectorAll(':scope > div').forEach(function(item, index) {
-          item.classList.add('reveal-item');
-          item.style.setProperty('--reveal-index', index);
+          item.style.setProperty('--reveal-index', Math.min(index, 3));
         });
         revealObserver.observe(featureGrid);
       }
@@ -898,12 +1050,6 @@
         item.classList.add('reveal');
         revealObserver.observe(item);
       });
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(element) {
-          element.classList.add('is-visible');
-        });
-      }
     })();
     </script>
   </body>
