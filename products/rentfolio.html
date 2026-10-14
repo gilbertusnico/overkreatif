@@ -145,11 +145,13 @@
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 5.5rem;
+            scroll-padding-top: 65px;
         }
 
-        [id] {
-            scroll-margin-top: 5.5rem;
+        @media (min-width: 640px) {
+            html {
+                scroll-padding-top: 81px;
+            }
         }
 
         :focus-visible {
@@ -729,9 +731,9 @@
         }
 
         function closeMenu() {
-            if (!mobileMenuPanel.classList.contains('open')) return;
             mobileMenuPanel.classList.remove('open');
             menuButton.setAttribute('aria-expanded', 'false');
+            menuButton.setAttribute('aria-label', 'Buka menu');
             setMenuIcon('menu');
         }
 
@@ -743,7 +745,8 @@
                 const isOpen = !mobileMenuPanel.classList.contains('open');
                 mobileMenuPanel.classList.toggle('open', isOpen);
                 menuButton.setAttribute('aria-expanded', String(isOpen));
-                if (isOpen) setMenuIcon('x');
+                menuButton.setAttribute('aria-label', isOpen ? 'Tutup menu' : 'Buka menu');
+                setMenuIcon(isOpen ? 'x' : 'menu');
             });
 
             mobileMenuPanel.querySelectorAll('a').forEach(link => {

@@ -710,11 +710,7 @@
     /* Mobile overlay menu and animations to match provided design */
     html {
       scroll-behavior: smooth;
-      scroll-padding-top: 5.5rem;
-    }
-
-    main[id], section[id] {
-      scroll-margin-top: 5.5rem;
+      scroll-padding-top: 74.5px;
     }
 
     :focus-visible {
@@ -854,6 +850,8 @@
 
       var originalButtonHTML = menuButton.innerHTML;
       var xIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+      var hideTimer;
+      var hideTransitionEnd;
 
       function setExpanded(expanded) {
         menuButton.setAttribute('aria-expanded', String(expanded));
@@ -862,13 +860,20 @@
 
       // helper to show overlay with animation
       function showNav() {
+        clearTimeout(hideTimer);
+        if (hideTransitionEnd) {
+          nav.removeEventListener('transitionend', hideTransitionEnd);
+          hideTransitionEnd = null;
+        }
         nav.classList.remove('hidden');
         nav.classList.add('mobile-overlay');
         header.classList.add('mobile-open');
         // allow browser to paint the base state, then animate in
         requestAnimationFrame(function() {
           requestAnimationFrame(function() {
-            nav.classList.add('mobile-visible');
+            if (menuButton.getAttribute('aria-expanded') === 'true') {
+              nav.classList.add('mobile-visible');
+            }
           });
         });
         setExpanded(true);
@@ -884,24 +889,30 @@
         menuButton.classList.remove('open');
         // restore icon immediately (keeps X->hamburger smooth)
         menuButton.innerHTML = originalButtonHTML;
-        header.classList.remove('mobile-open');
-        // after transition ends, fully hide the nav
+        clearTimeout(hideTimer);
+        if (hideTransitionEnd) nav.removeEventListener('transitionend', hideTransitionEnd);
+        // Keep the header in overlay layout until its exit animation finishes.
         var finishHide = function() {
+          if (menuButton.getAttribute('aria-expanded') === 'true') return;
           nav.classList.remove('mobile-overlay');
+          header.classList.remove('mobile-open');
           if (window.matchMedia('(min-width: 1024px)').matches === false) {
             nav.classList.add('hidden');
           }
         };
         var onEnd = function(e) {
-          if (e.target !== nav) return;
+          if (e.target !== nav || e.propertyName !== 'opacity') return;
           nav.removeEventListener('transitionend', onEnd);
+          hideTransitionEnd = null;
           finishHide();
         };
+        hideTransitionEnd = onEnd;
         nav.addEventListener('transitionend', onEnd);
         // safety fallback in case transitionend doesn't fire
-        setTimeout(function() {
+        hideTimer = setTimeout(function() {
           if (nav.classList.contains('mobile-overlay') && !nav.classList.contains('mobile-visible')) {
             nav.removeEventListener('transitionend', onEnd);
+            hideTransitionEnd = null;
             finishHide();
           }
         }, 320);
@@ -943,6 +954,11 @@
       function syncOnResize() {
         if (mq.matches) {
           // On large screens nav should be visible and header shouldn't hold mobile state
+          clearTimeout(hideTimer);
+          if (hideTransitionEnd) {
+            nav.removeEventListener('transitionend', hideTransitionEnd);
+            hideTransitionEnd = null;
+          }
           header.classList.remove('mobile-open');
           nav.classList.remove('mobile-overlay', 'mobile-visible', 'hidden');
           setExpanded(false);

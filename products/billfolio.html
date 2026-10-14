@@ -207,6 +207,15 @@
             font-weight: 800;
         }
 
+        .desktop-nav a {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+
+        .desktop-nav a.is-active {
+            border-bottom-color: var(--blue);
+        }
+
         .bg-slate-50,
         body .bg-slate-50,
         section.bg-slate-50 {
@@ -375,11 +384,7 @@
         }
 
         html {
-            scroll-padding-top: 5rem;
-        }
-
-        [id] {
-            scroll-margin-top: 5rem;
+            scroll-padding-top: 65px;
         }
 
         :focus-visible {
@@ -438,6 +443,10 @@
             display: none !important;
         }
 
+        .mobile-menu-panel {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .mobile-menu {
                 display: inline-flex !important;
@@ -452,7 +461,6 @@
             }
 
             .mobile-menu-panel {
-                display: none;
                 position: absolute;
                 top: 100%;
                 left: 0;
@@ -578,11 +586,11 @@
         </div>
             
             <div class="desktop-nav hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-                <a href="#mockup" class="hover:text-blue-600 transition">Pratinjau</a>
-                <a href="#fitur" class="hover:text-blue-600 transition">Fitur</a>
-                <a href="#solusi" class="hover:text-blue-600 transition">Manfaat</a>
-                <a href="#cara-kerja" class="hover:text-blue-600 transition">Cara Kerja</a>
-                <a href="#faq" class="hover:text-blue-600 transition">FAQ</a>
+                <a href="#mockup" class="transition">Pratinjau</a>
+                <a href="#fitur" class="transition">Fitur</a>
+                <a href="#solusi" class="transition">Manfaat</a>
+                <a href="#cara-kerja" class="transition">Cara Kerja</a>
+                <a href="#faq" class="transition">FAQ</a>
             </div>
 
             <div class="flex items-center gap-3 nav-cta">
@@ -921,9 +929,9 @@
             }
 
             function closeMenu() {
-                if (!mobileMenuPanel.classList.contains('open')) return;
                 mobileMenuPanel.classList.remove('open');
                 menuButton.setAttribute('aria-expanded', 'false');
+                menuButton.setAttribute('aria-label', 'Buka menu');
                 setMenuIcon('menu');
             }
 
@@ -935,7 +943,8 @@
                     var isOpen = !mobileMenuPanel.classList.contains('open');
                     mobileMenuPanel.classList.toggle('open', isOpen);
                     menuButton.setAttribute('aria-expanded', String(isOpen));
-                    if (isOpen) setMenuIcon('x');
+                    menuButton.setAttribute('aria-label', isOpen ? 'Tutup menu' : 'Buka menu');
+                    setMenuIcon(isOpen ? 'x' : 'menu');
                 });
 
                 mobileMenuPanel.querySelectorAll('a').forEach(function (link) {
@@ -953,19 +962,20 @@
                 else if (mqDesktop.addListener) mqDesktop.addListener(onBreakpoint);
             }
 
-            // Navbar active-link highlighting on scroll (pill style, like RentFolio).
+            // Mark the current section with a blue underline.
             var navLinks = Array.prototype.slice.call(document.querySelectorAll('.desktop-nav a[href^="#"]'));
             var spySections = navLinks
                 .map(function (link) { return document.getElementById(link.getAttribute('href').slice(1)); })
-                .filter(Boolean);
+                .filter(Boolean)
+                .sort(function (a, b) {
+                    return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+                });
 
             if (navLinks.length && spySections.length) {
                 var setActive = function (id) {
                     navLinks.forEach(function (link) {
                         var isActive = link.getAttribute('href') === '#' + id;
-                        link.classList.toggle('bg-blue-50', isActive);
-                        link.classList.toggle('text-blue-600', isActive);
-                        link.classList.toggle('font-bold', isActive);
+                        link.classList.toggle('is-active', isActive);
                         link.setAttribute('aria-current', isActive ? 'true' : 'false');
                     });
                 };
@@ -973,7 +983,7 @@
                 var ticking = false;
                 var updateActive = function () {
                     ticking = false;
-                    var offset = 120; // sticky navbar height + margin
+                    var offset = document.querySelector('nav').getBoundingClientRect().height + 1;
                     var current = '';
                     for (var i = 0; i < spySections.length; i++) {
                         if (spySections[i].getBoundingClientRect().top - offset <= 0) {
