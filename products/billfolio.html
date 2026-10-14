@@ -322,10 +322,16 @@
             background: rgba(239,68,68,0.08) !important;
         }
 
-        .bg-white:hover,
-        .rounded-2xl:hover {
-            transform: translateY(-2px);
+        .bg-white,
+        .rounded-2xl {
             transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .bg-white:hover,
+            .rounded-2xl:hover {
+                transform: translateY(-2px);
+            }
         }
 
         .border-y,
@@ -347,15 +353,19 @@
             box-shadow: 0 18px 35px rgba(9, 33, 78, 0.18);
         }
 
-        .block,
-        .inline-flex,
-        .flex {
+        /* Only buttons/CTAs get the lift micro-interaction. Targeting every
+           .block/.inline-flex/.flex made hundreds of containers animate and
+           republish their stacking context on each hover. */
+        a.inline-flex,
+        button {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .inline-flex:hover,
-        .flex:hover {
-            transform: translateY(-1px);
+        @media (hover: hover) and (pointer: fine) {
+            a.inline-flex:hover,
+            button:hover {
+                transform: translateY(-1px);
+            }
         }
 
         .eyebrow-label {
@@ -364,33 +374,54 @@
             letter-spacing: 0.14em;
         }
 
-        .reveal {
+        html {
+            scroll-padding-top: 5rem;
+        }
+
+        [id] {
+            scroll-margin-top: 5rem;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        html.js .reveal {
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: opacity, transform;
         }
 
-        .reveal.visible {
+        html.js .reveal.visible {
             opacity: 1;
-            transform: translate3d(0, 0, 0);
+            transform: none;
         }
 
-        .reveal-item {
+        html.js .reveal-item {
             opacity: 0;
             transform: translateY(16px);
             transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
             transition-delay: var(--reveal-delay, 0ms);
         }
 
-        .reveal-item.visible {
+        html.js .reveal-item.visible {
             opacity: 1;
-            transform: translate3d(0, 0, 0);
+            transform: none;
         }
 
         @media (prefers-reduced-motion: reduce) {
             html {
                 scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
 
             .reveal,
@@ -562,7 +593,7 @@
                 <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
 
-            <div class="mobile-menu-panel md:hidden" id="mobileMenuPanel">
+            <div class="mobile-menu-panel" id="mobileMenuPanel">
                 <a href="#mockup">Pratinjau</a>
                 <a href="#fitur">Fitur</a>
                 <a href="#solusi">Manfaat</a>
@@ -869,68 +900,143 @@
 
     <!-- Initialize Lucide Icons -->
     <script>
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            window.lucide.createIcons();
-        }
+        (function () {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
 
-        const menuButton = document.getElementById('mobileMenuButton');
-        const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            var menuButton = document.getElementById('mobileMenuButton');
+            var mobileMenuPanel = document.getElementById('mobileMenuPanel');
 
-        if (menuButton && mobileMenuPanel) {
-            menuButton.addEventListener('click', () => {
-                const isOpen = mobileMenuPanel.classList.toggle('open');
-                menuButton.setAttribute('aria-expanded', String(isOpen));
-                menuButton.innerHTML = isOpen
-                    ? '<i data-lucide="x" class="w-5 h-5"></i>'
-                    : '<i data-lucide="menu" class="w-5 h-5"></i>';
+            // Static markup already ships the hamburger icon; only swap the
+            // icon via JS when the menu is actually opened (Lucide replaces
+            // <i data-lucide> with <svg>, so re-querying after each toggle
+            // would throw and break the close handler).
+            function setMenuIcon(name) {
+                if (!menuButton) return;
+                menuButton.innerHTML = '<i data-lucide="' + name + '" class="w-5 h-5"></i>';
                 if (window.lucide && typeof window.lucide.createIcons === 'function') {
                     window.lucide.createIcons();
                 }
-            });
+            }
 
-            mobileMenuPanel.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenuPanel.classList.remove('open');
-                    menuButton.setAttribute('aria-expanded', 'false');
-                    menuButton.innerHTML = '<i data-lucide="menu" class="w-5 h-5"></i>';
-                    if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                        window.lucide.createIcons();
+            function closeMenu() {
+                if (!mobileMenuPanel.classList.contains('open')) return;
+                mobileMenuPanel.classList.remove('open');
+                menuButton.setAttribute('aria-expanded', 'false');
+                setMenuIcon('menu');
+            }
+
+            if (menuButton && mobileMenuPanel) {
+                menuButton.setAttribute('aria-controls', 'mobileMenuPanel');
+                menuButton.setAttribute('aria-expanded', 'false');
+
+                menuButton.addEventListener('click', function () {
+                    var isOpen = !mobileMenuPanel.classList.contains('open');
+                    mobileMenuPanel.classList.toggle('open', isOpen);
+                    menuButton.setAttribute('aria-expanded', String(isOpen));
+                    if (isOpen) setMenuIcon('x');
+                });
+
+                mobileMenuPanel.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', closeMenu);
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') closeMenu();
+                });
+
+                // Close the panel automatically when leaving mobile range.
+                var mqDesktop = window.matchMedia('(min-width: 769px)');
+                var onBreakpoint = function (e) { if (e.matches) closeMenu(); };
+                if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', onBreakpoint);
+                else if (mqDesktop.addListener) mqDesktop.addListener(onBreakpoint);
+            }
+
+            // Navbar active-link highlighting on scroll (pill style, like RentFolio).
+            var navLinks = Array.prototype.slice.call(document.querySelectorAll('.desktop-nav a[href^="#"]'));
+            var spySections = navLinks
+                .map(function (link) { return document.getElementById(link.getAttribute('href').slice(1)); })
+                .filter(Boolean);
+
+            if (navLinks.length && spySections.length) {
+                var setActive = function (id) {
+                    navLinks.forEach(function (link) {
+                        var isActive = link.getAttribute('href') === '#' + id;
+                        link.classList.toggle('bg-blue-50', isActive);
+                        link.classList.toggle('text-blue-600', isActive);
+                        link.classList.toggle('font-bold', isActive);
+                        link.setAttribute('aria-current', isActive ? 'true' : 'false');
+                    });
+                };
+
+                var ticking = false;
+                var updateActive = function () {
+                    ticking = false;
+                    var offset = 120; // sticky navbar height + margin
+                    var current = '';
+                    for (var i = 0; i < spySections.length; i++) {
+                        if (spySections[i].getBoundingClientRect().top - offset <= 0) {
+                            current = spySections[i].id;
+                        }
                     }
-                });
-            });
-        }
-
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduceMotion && 'IntersectionObserver' in window) {
-            const revealObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        revealObserver.unobserve(entry.target);
+                    if (!current && window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
+                        current = spySections[spySections.length - 1].id;
                     }
+                    setActive(current);
+                };
+
+                window.addEventListener('scroll', function () {
+                    if (!ticking) {
+                        ticking = true;
+                        requestAnimationFrame(updateActive);
+                    }
+                }, { passive: true });
+                window.addEventListener('resize', function () {
+                    if (!ticking) {
+                        ticking = true;
+                        requestAnimationFrame(updateActive);
+                    }
+                }, { passive: true });
+                updateActive();
+            }
+
+            // Scroll reveal: only enabled when motion is allowed; sections keep
+            // full opacity if JS is disabled or reduced motion is requested.
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!reduceMotion && 'IntersectionObserver' in window) {
+                document.documentElement.classList.add('js');
+
+                var revealObserver = new IntersectionObserver(function (entries, observer) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+
+                document.querySelectorAll('body > section:not(:first-of-type)').forEach(function (section) {
+                    section.classList.add('reveal');
+                    revealObserver.observe(section);
                 });
-            }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
 
-            document.querySelectorAll('body > section:not(:first-of-type)').forEach(section => {
-                section.classList.add('reveal');
-                revealObserver.observe(section);
-            });
+                var staggerGroups = [
+                    '#solusi .grid > div',
+                    '#mockup .grid > article',
+                    '#fitur .grid > div',
+                    '#cara-kerja .grid > .step-card'
+                ];
 
-            const staggerGroups = [
-                '#solusi .grid > div',
-                '#mockup .grid > article',
-                '#fitur .grid > div',
-                '#cara-kerja .grid > .step-card'
-            ];
-
-            staggerGroups.forEach(selector => {
-                document.querySelectorAll(selector).forEach((item, index) => {
-                    item.classList.add('reveal-item');
-                    item.style.setProperty('--reveal-delay', `${Math.min(index * 80, 240)}ms`);
-                    revealObserver.observe(item);
+                staggerGroups.forEach(function (selector) {
+                    document.querySelectorAll(selector).forEach(function (item, index) {
+                        item.classList.add('reveal-item');
+                        item.style.setProperty('--reveal-delay', Math.min(index * 80, 240) + 'ms');
+                        revealObserver.observe(item);
+                    });
                 });
-            });
-        }
+            }
+        })();
     </script>
 </body>
 </html>

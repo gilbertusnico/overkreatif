@@ -145,6 +145,17 @@
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 5.5rem;
+        }
+
+        [id] {
+            scroll-margin-top: 5.5rem;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--brand-gold);
+            outline-offset: 3px;
+            border-radius: 4px;
         }
 
         body {
@@ -163,33 +174,46 @@
         .text-gold { color: var(--brand-gold); }
         .border-line { border-color: var(--line-border); }
 
-        .reveal {
+        html.js .reveal {
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: opacity, transform;
         }
 
-        .reveal.is-visible {
+        html.js .reveal.is-visible {
             opacity: 1;
             transform: translate3d(0, 0, 0);
+            will-change: auto;
         }
 
-        .reveal-item {
+        html.js .reveal-item {
             opacity: 0;
             transform: translateY(16px);
             transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
             transition-delay: var(--reveal-delay, 0ms);
         }
 
-        .reveal-item.is-visible {
+        html.js .reveal-item.is-visible {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
 
+        /* Active navbar link (scroll spy, desktop pill nav only) */
+        header > div > nav a.nav-active {
+            color: var(--ink-dark);
+            background: var(--bg-paper);
+        }
         @media (prefers-reduced-motion: reduce) {
             html {
                 scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
 
             .reveal,
@@ -697,31 +721,97 @@
         const menuButton = document.getElementById('mobileMenuButton');
         const mobileMenuPanel = document.getElementById('mobileMenuPanel');
 
+        function setMenuIcon(name) {
+            menuButton.innerHTML = '<i data-lucide="' + name + '" class="w-5 h-5"></i>';
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons();
+            }
+        }
+
+        function closeMenu() {
+            if (!mobileMenuPanel.classList.contains('open')) return;
+            mobileMenuPanel.classList.remove('open');
+            menuButton.setAttribute('aria-expanded', 'false');
+            setMenuIcon('menu');
+        }
+
         if (menuButton && mobileMenuPanel) {
+            menuButton.setAttribute('aria-controls', 'mobileMenuPanel');
+            menuButton.setAttribute('aria-expanded', 'false');
+
             menuButton.addEventListener('click', () => {
-                const isOpen = mobileMenuPanel.classList.toggle('open');
-                menuButton.innerHTML = isOpen 
-                    ? '<i data-lucide="x" class="w-5 h-5"></i>' 
-                    : '<i data-lucide="menu" class="w-5 h-5"></i>';
-                if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                    window.lucide.createIcons();
-                }
+                const isOpen = !mobileMenuPanel.classList.contains('open');
+                mobileMenuPanel.classList.toggle('open', isOpen);
+                menuButton.setAttribute('aria-expanded', String(isOpen));
+                if (isOpen) setMenuIcon('x');
             });
 
             mobileMenuPanel.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenuPanel.classList.remove('open');
-                    menuButton.innerHTML = '<i data-lucide="menu" class="w-5 h-5"></i>';
-                    if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                        window.lucide.createIcons();
-                    }
-                });
+                link.addEventListener('click', closeMenu);
             });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeMenu();
+            });
+
+            // Close the panel automatically when leaving mobile range.
+            const mqDesktop = window.matchMedia('(min-width: 1024px)');
+            const onBreakpoint = (e) => { if (e.matches) closeMenu(); };
+            if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', onBreakpoint);
+            else if (mqDesktop.addListener) mqDesktop.addListener(onBreakpoint);
+        }
+
+        // Navbar active-link highlighting on scroll (pill style).
+        const navLinks = Array.prototype.slice.call(
+            document.querySelectorAll('header nav a[href^="#"]')
+        );
+        const spySections = navLinks
+            .map(link => document.getElementById(link.getAttribute('href').slice(1)))
+            .filter(Boolean);
+
+        if (navLinks.length && spySections.length) {
+            const setActive = (id) => {
+                navLinks.forEach(link => {
+                    const isActive = link.getAttribute('href') === '#' + id;
+                    link.classList.toggle('nav-active', isActive);
+                    if (isActive) link.setAttribute('aria-current', 'true');
+                    else link.removeAttribute('aria-current');
+                });
+            };
+
+            let ticking = false;
+            const updateActive = () => {
+                ticking = false;
+                const offset = 130; // sticky navbar height + margin
+                let current = '';
+                for (const section of spySections) {
+                    if (section.getBoundingClientRect().top - offset <= 0) {
+                        current = section.id;
+                    }
+                }
+                if (!current && window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
+                    current = spySections[spySections.length - 1].id;
+                }
+                setActive(current);
+            };
+
+            const scheduleUpdate = () => {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(updateActive);
+                }
+            };
+
+            window.addEventListener('scroll', scheduleUpdate, { passive: true });
+            window.addEventListener('resize', scheduleUpdate, { passive: true });
+            updateActive();
         }
 
         // Scroll reveal stays opt-in so content remains visible if motion is reduced or unsupported.
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (!reduceMotion && 'IntersectionObserver' in window) {
+            document.documentElement.classList.add('js');
+
             const revealObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -737,10 +827,11 @@
             });
 
             const staggerGroups = [
-                '#features .grid > div',
+                '#features .gap-6 > div',
+                '#challenges .py-6',
                 '#showcase .space-y-16 > div',
-                '#workflow .border-l-2 > div',
-                '#who-its-for .mt-12.grid > div'
+                '#workflow .space-y-12 > div',
+                '#who-its-for .gap-4 > div'
             ];
 
             staggerGroups.forEach(selector => {
