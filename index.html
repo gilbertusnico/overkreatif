@@ -85,16 +85,18 @@
       }
     }
 
-    .perspective-mockup {
-      perspective: 1000px;
+    @media (prefers-reduced-motion: reduce){
+      .clarity-curve{ animation: none; stroke-dashoffset: 0; }
     }
 
     .hover-lift {
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
     }
 
-    .hover-lift:hover {
-      transform: translateY(-8px) scale(1.02);
+    @media (hover:hover){
+      .hover-lift:hover {
+        transform: translateY(-8px) scale(1.02);
+      }
     }
 
     .show-desktop {
@@ -138,6 +140,11 @@
 
       #mobile-nav-overlay {
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Scroll-lock works on all viewport sizes (not just mobile) when the menu is open */
+      body.mobile-menu-active {
+        overflow: hidden;
       }
 
       .stagger-in>* {
@@ -272,46 +279,51 @@
       }
     }
     /* --- Interactive UI styles (lightweight) --- */
-    /* Subtle animated background for hero (CSS-only) */
-    @keyframes shift-bg { from{background-position:0% 50%} to{background-position:100% 50%} }
-    .bg-animated{ background: linear-gradient(90deg,#e6f4ff 0%, #d7ecff 35%, #cfe8ff 65%, #eaf6ff 100%); background-size:200% 200%; animation: shift-bg 14s linear infinite; }
-    .bg-animated{ background-color:#eaf6ff; }
-    @media (prefers-reduced-motion: reduce){ .bg-animated{ animation: none; } }
-
-    /* Reveal on scroll */
-    .reveal{ opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal.in-view{ opacity: 1; transform: none; }
+    /* Reveal-on-scroll: only hide elements when JS is confirmed available (html.js-reveal),
+       otherwise content must never be stuck invisible. Reduced motion disables the animation. */
+    html.js-reveal .reveal{ opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    html.js-reveal .reveal.in-view{ opacity: 1; transform: none; }
 
     /* FAQ content wrapper for animated open/close */
-    .faq-content{ max-height: 0; overflow: hidden; transition: max-height .36s ease; }
+    .faq-content{ overflow: hidden; transition: height .36s cubic-bezier(.2,.9,.3,1); }
 
-    /* Button micro-interactions (ripple + lift) */
+    /* Button micro-interactions (press feedback + lift). Lift only on hover for mouse devices. */
     .btn-ux{ position:relative; overflow:hidden; transition: transform .18s cubic-bezier(.2,.9,.3,1), box-shadow .18s; }
     .btn-ux::after{ content:""; position:absolute; inset:0; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.08) 30%, transparent 40%); opacity:0; transform:scale(0.8); transition:opacity .25s, transform .35s; pointer-events:none; }
     .btn-ux:active::after{ opacity:.95; transform:scale(1.2); transition:opacity .12s, transform .12s; }
-    .btn-ux:hover, .btn-ux:focus{ transform: translateY(-4px); box-shadow: 0 10px 28px rgba(2,6,23,0.06); }
+    @media (hover:hover){
+      .btn-ux:hover{ transform: translateY(-4px); box-shadow: 0 10px 28px rgba(2,6,23,0.06); }
+    }
+    .btn-ux:focus-visible{ outline:2px solid #003ec7; outline-offset:3px; }
 
-    /* Card hover micro-interactions: image scale, subtle overlay, lift */
+    /* Card hover micro-interactions: image scale, subtle overlay, lift (mouse devices only) */
     .card{ --card-ease: cubic-bezier(.2,.9,.3,1); }
-    .card > .bg-surface-container{ position:relative; overflow:hidden; transition: transform .38s var(--card-ease), box-shadow .38s var(--card-ease); will-change: transform; }
+    .card > .bg-surface-container{ position:relative; overflow:hidden; transition: transform .38s var(--card-ease), box-shadow .38s var(--card-ease); }
     .card > .bg-surface-container::after{ content: ""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(2,6,23,0) 28%, rgba(2,6,23,0.06) 100%); opacity:0; transition: opacity .38s var(--card-ease); pointer-events:none; }
-    .card img{ transition: transform .6s var(--card-ease); will-change: transform; display:block; }
-    .card:hover > .bg-surface-container{ transform: translateY(-8px); box-shadow: 0 22px 48px rgba(2,6,23,0.08); }
-    .card:hover > .bg-surface-container::after{ opacity:1; }
-    .card:hover img{ transform: scale(1.06) translateY(-4px); }
+    .card img{ transition: transform .6s var(--card-ease); display:block; }
+    @media (hover:hover){
+      .card:hover > .bg-surface-container{ transform: translateY(-8px); box-shadow: 0 22px 48px rgba(2,6,23,0.08); will-change: transform; }
+      .card:hover > .bg-surface-container::after{ opacity:1; }
+      .card:hover img{ transform: scale(1.06) translateY(-4px); will-change: transform; }
+    }
     @media (prefers-reduced-motion: reduce){
       .card > .bg-surface-container, .card img{ transition: none !important; transform: none !important; }
     }
 
-    /* Navigation active underline (desktop) */
-    .nav-link{ position:relative; padding-bottom:10px; }
+    /* Navigation active state (desktop): color cue works even before first scroll */
+    .nav-link{ position:relative; padding-bottom:10px; transition: color .2s ease; }
+    .nav-link.active{ color:#003ec7; font-weight:700; }
     /* Underline element that slides under active nav item (single underline) */
-    #nav-underline{ position:absolute; /* place nearer the text */ bottom:24px; left:0; height:4px; background:linear-gradient(90deg,#2563eb,#0047d1); border-radius:999px; transform:translateX(0); width:0; transition:transform .28s cubic-bezier(.2,.9,.3,1), width .28s cubic-bezier(.2,.9,.3,1), opacity .18s; opacity:0; z-index:5; }
+    #nav-underline{ position:absolute; /* place nearer the text */ bottom:24px; left:0; height:4px; background:linear-gradient(90deg,#2563eb,#0047d1); border-radius:999px; transform:translateX(0); width:0; transition:transform .28s cubic-bezier(.2,.9,.3,1), width .28s cubic-bezier(.2,.9,.3,1), opacity .18s; opacity:0; z-index:5; pointer-events:none; }
     /* ensure nav is positioned for absolute underline */
     header nav{ position:relative; }
     @media (min-width: 1024px){
       /* disable per-link pseudo underline — we use a single sliding underline instead */
       .nav-link::after, .nav-link.active::after { display:none !important; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #nav-underline{ transition: none; }
+      .js-reveal .reveal{ transition: none; opacity: 1; transform: none; }
     }
 
     /* iPad / large tablet header tweaks to avoid overlap */
@@ -771,7 +783,6 @@
           <a class="text-headline-md font-headline-md text-on-surface-variant" href="#services">Layanan</a>
           <a class="text-headline-md font-headline-md text-on-surface-variant" href="#think">Cara Kami Berpikir</a>
           <a class="text-headline-md font-headline-md text-on-surface-variant" href="#system">Proses Kami</a>
-          <a class="text-headline-md font-headline-md text-on-surface-variant" href="#about">Tentang</a>
           <a class="text-headline-md font-headline-md text-on-surface-variant" href="#faq">FAQ</a>
         </div>
         <div class="mt-auto pt-12">
@@ -799,7 +810,7 @@
             </a>
           </div>
         </div>
-        <div class="relative perspective-mockup">
+        <div class="relative">
           <img class="lazy-img is-loading" fetchpriority="high" decoding="async" src="img/portofolio-all.webp" srcset="img/portofolio-all.webp 840w, img/portofolio-all-full.webp 1402w" sizes="(min-width: 1024px) 42vw, 100vw" width="1402" height="1122" alt="Pilihan proyek identitas merek, website, dan pengalaman digital Overkreatif" />
         </div>
       </div>
@@ -1427,82 +1438,65 @@
       });
     })();
 
-    // Section progress bar update on scroll
+    // Section progress bar update on scroll (rAF-throttled, GPU-friendly scaleX)
     (function(){
       var bar = document.getElementById('section-progress');
       if(!bar) return;
+      bar.style.transformOrigin = 'left center';
+      bar.style.width = '100%';
+      bar.style.transform = 'scaleX(0)';
+      var ticking = false;
       function update(){
+        ticking = false;
         var doc = document.documentElement;
         var scrolled = (window.scrollY || window.pageYOffset);
         var height = doc.scrollHeight - window.innerHeight;
-        var pct = height > 0 ? Math.min(100, Math.max(0, (scrolled/height)*100)) : 0;
-        bar.style.width = pct + '%';
+        var pct = height > 0 ? Math.min(1, Math.max(0, scrolled/height)) : 0;
+        bar.style.transform = 'scaleX(' + pct + ')';
       }
-      window.addEventListener('scroll', update, {passive:true});
-      window.addEventListener('resize', update);
+      function onScroll(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', onScroll, {passive:true});
       update();
     })();
-    // Smooth reveal on scroll logic can be added here
-    document.addEventListener('DOMContentLoaded', () => {
-      const observerOptions = {
-        threshold: 0.1
-      };
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('opacity-100', 'translate-y-0');
-            entry.target.classList.remove('opacity-0', 'translate-y-10');
-          }
-        });
-      }, observerOptions);
-
-      // Targets for reveal animation
-      const animateElements = document.querySelectorAll('.group, section h2, section p, .p-8');
-      animateElements.forEach(el => {
-        el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
-        observer.observe(el);
+    // Mobile menu logic (Escape-to-close, auto-close on link tap, aria state)
+    (function(){
+      var hamburger = document.getElementById('hamburger-toggle');
+      var closeMenu = document.getElementById('close-menu');
+      var overlay = document.getElementById('mobile-nav-overlay');
+      if(!hamburger || !closeMenu || !overlay) return;
+      function openMenu(){
+        overlay.classList.remove('translate-x-full');
+        document.body.classList.add('mobile-menu-active');
+        hamburger.setAttribute('aria-expanded','true');
+      }
+      function closeMenuFn(){
+        overlay.classList.add('translate-x-full');
+        document.body.classList.remove('mobile-menu-active');
+        hamburger.setAttribute('aria-expanded','false');
+      }
+      hamburger.setAttribute('aria-expanded','false');
+      hamburger.setAttribute('aria-controls','mobile-nav-overlay');
+      hamburger.addEventListener('click', openMenu);
+      closeMenu.addEventListener('click', closeMenuFn);
+      overlay.querySelectorAll('a[href^="#"]').forEach(function(a){ a.addEventListener('click', closeMenuFn); });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && !overlay.classList.contains('translate-x-full')) closeMenuFn();
       });
-    });
+    })();
 
-    // Mobile menu logic
-    const hamburger = document.getElementById('hamburger-toggle');
-    const closeMenu = document.getElementById('close-menu');
-    const overlay = document.getElementById('mobile-nav-overlay');
-
-    hamburger.addEventListener('click', () => {
-      overlay.classList.remove('translate-x-full');
-      document.body.classList.add('mobile-menu-active');
-    });
-
-    closeMenu.addEventListener('click', () => {
-      overlay.classList.add('translate-x-full');
-      document.body.classList.remove('mobile-menu-active');
-    });
-
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.scroll-trigger').forEach(el => observer.observe(el));
+    // NOTE: Removed dead IntersectionObserver blocks — no element in this page uses
+    // .reveal / .scroll-trigger / opacity-0, so those observers only wasted CPU.
+    // Scroll-linked behaviour lives in the script below and respects reduced motion.
     </script>
     <script>
     (function(){
-      // Exit early on touch devices or reduced motion
-      if('ontouchstart' in window || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      // --- Cursor-follow gradient ---
-      // Cursor-follow gradient and parallax logic removed due to performance concerns.
-      // These features were disabled to avoid causing lag on some devices.
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Gate reveal styles behind JS presence so content is never stuck invisible without JS
+      document.documentElement.classList.add('js-reveal');
 
       // --- Reveal on scroll (for .reveal elements) ---
       const revealObserver = new IntersectionObserver((entries)=>{
@@ -1514,6 +1508,7 @@
       document.querySelectorAll('details').forEach(details=>{
         // wrap non-summary children into wrapper
         const summary = details.querySelector('summary');
+        if(!summary) return;
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'faq-content';
         let node = summary.nextSibling;
@@ -1527,16 +1522,20 @@
         details.appendChild(contentWrapper);
 
         // initialize
-        if(details.open){ contentWrapper.style.maxHeight = contentWrapper.scrollHeight + 'px'; }
+        contentWrapper.style.height = details.open ? 'auto' : '0px';
 
         details.addEventListener('toggle', ()=>{
+          if(reduceMotion){ contentWrapper.style.height = details.open ? 'auto' : '0px'; return; }
           if(details.open){
-            contentWrapper.style.maxHeight = contentWrapper.scrollHeight + 'px';
-            setTimeout(()=>{ contentWrapper.style.maxHeight = 'none'; }, 380);
+            // animate from 0 to natural height, then release to auto
+            const target = contentWrapper.scrollHeight;
+            contentWrapper.style.height = '0px';
+            requestAnimationFrame(()=>{ contentWrapper.style.height = target + 'px'; });
+            setTimeout(()=>{ contentWrapper.style.height = 'auto'; }, 380);
           } else {
-            // set to current height then close to 0 for transition
-            contentWrapper.style.maxHeight = contentWrapper.scrollHeight + 'px';
-            requestAnimationFrame(()=>{ contentWrapper.style.maxHeight = '0px'; });
+            // freeze current height, then collapse to 0 on next frame
+            contentWrapper.style.height = contentWrapper.scrollHeight + 'px';
+            requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ contentWrapper.style.height = '0px'; }); });
           }
         });
       });
@@ -1556,15 +1555,6 @@
         const idToAnchor = new Map(headerAnchors.map(a=>[a.getAttribute('href').replace('#',''), a]));
         const observedSections = [];
         idToAnchor.forEach((v,k)=>{ const el = document.getElementById(k); if(el) observedSections.push(el); });
-        let currentActiveId = null;
-        function applyActiveId(id){
-          if(!id || id === currentActiveId) return;
-          const anchor = document.querySelector('header.show-desktop a.nav-link[href="#'+id+'"]');
-          if(!anchor) return;
-          document.querySelectorAll('header.show-desktop a.nav-link').forEach(x=> x.classList.toggle('active', x===anchor));
-          currentActiveId = id;
-          positionUnderline(anchor);
-        }
         if(observedSections.length){
           const navObserver = new IntersectionObserver((entries)=>{
             const visible = entries.filter(e => e.intersectionRatio > 0);
@@ -1587,6 +1577,7 @@
 
       // Small helper: position underline and immediate active behavior to avoid flicker on click
       (function(){
+        let currentActiveId = null;
         function findUnderlineForAnchor(a){
           const nav = a.closest('nav'); if(!nav) return null;
           return nav.querySelector('[id^="nav-underline"]');
@@ -1603,6 +1594,7 @@
         }
         function setActiveAnchor(a){
           document.querySelectorAll('header a.nav-link').forEach(x=> x.classList.toggle('active', x===a));
+          currentActiveId = (a.getAttribute('href') || '').replace('#','');
           positionUnderline(a);
         }
 
@@ -1617,14 +1609,11 @@
             // set a short lock so IntersectionObserver doesn't override during smooth scroll
             window.__navLockExpires = Date.now() + 900;
             setActiveAnchor(a);
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
             try{ history.replaceState(null, '', href); }catch(_){ }
           });
         });
 
-        // Keep underline positioned on resize and after load
-        window.addEventListener('resize', function(){ const active = document.querySelector('header a.nav-link.active'); if(active) positionUnderline(active); });
-        window.addEventListener('load', function(){ const active = document.querySelector('header a.nav-link.active'); if(active) positionUnderline(active); });
         // Handle candidate events from observer; respect recent click lock
         document.addEventListener('navUpdateCandidate', function(e){
           try{
@@ -1632,11 +1621,22 @@
             if(window.__navLockExpires && now < window.__navLockExpires) return; // ignore while locked after click
             if(!navHasScrolled) return;
             var id = e.detail && e.detail.id;
-            if(!id) return;
+            if(!id || id === currentActiveId) return; // no-op guard avoids needless DOM churn
             var anchor = document.querySelector('header.show-desktop a.nav-link[href="#'+id+'"]');
             if(anchor) setActiveAnchor(anchor);
           }catch(err){/* ignore */}
         });
+
+        // Keep underline positioned on resize (debounced) and after load
+        var resizeTimer;
+        window.addEventListener('resize', function(){
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function(){
+            var active = document.querySelector('header a.nav-link.active');
+            if(active) positionUnderline(active);
+          }, 120);
+        });
+        window.addEventListener('load', function(){ var active = document.querySelector('header a.nav-link.active'); if(active) positionUnderline(active); });
       })();
 
     })();
