@@ -1,5 +1,15 @@
 {
+  "scripts": {
+    "build:css": "tailwindcss -i ./tailwind.input.css -o ./styles.css --minify"
+  },
   "dependencies": {
     "jsdom": "^29.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  },
+  "overrides": {
+    "@parcel/watcher": "2.6.0"
   }
 }
