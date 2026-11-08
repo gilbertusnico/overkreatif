@@ -393,29 +393,6 @@
             border-radius: 4px;
         }
 
-        html.js .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        html.js .reveal.visible {
-            opacity: 1;
-            transform: none;
-        }
-
-        html.js .reveal-item {
-            opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
-            transition-delay: var(--reveal-delay, 0ms);
-        }
-
-        html.js .reveal-item.visible {
-            opacity: 1;
-            transform: none;
-        }
-
         @media (prefers-reduced-motion: reduce) {
             html {
                 scroll-behavior: auto;
@@ -429,14 +406,6 @@
                 transition-duration: 0.01ms !important;
             }
 
-            .reveal,
-            .reveal-item {
-                opacity: 1;
-                transform: none;
-                transition: none;
-                transition-delay: 0ms;
-                will-change: auto;
-            }
         }
 
         .mobile-menu {
@@ -575,6 +544,18 @@
             }
         }
     </style>
+    <!-- Motion bootstrap: hide the hero until ../js/products-motion.min.js has primed it
+         (never under reduced motion; un-hidden after 3s if the bundle doesn't boot). -->
+    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}</style>
+    <script>
+      (function(){
+        var d = document.documentElement;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('pm-ready');
+        setTimeout(function(){ if(!window.__pmBooted) d.classList.remove('pm-ready'); }, 3000);
+      })();
+    </script>
+    <link rel="modulepreload" href="../js/products-motion.min.js" />
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
 
@@ -613,7 +594,7 @@
     </nav>
 
     <!-- HERO SECTION -->
-    <section class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 overflow-hidden">
+    <section class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 overflow-hidden" data-pm-hero>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- Badge -->
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-6">
@@ -1011,42 +992,8 @@
                 updateActive();
             }
 
-            // Scroll reveal: only enabled when motion is allowed; sections keep
-            // full opacity if JS is disabled or reduced motion is requested.
-            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (!reduceMotion && 'IntersectionObserver' in window) {
-                document.documentElement.classList.add('js');
-
-                var revealObserver = new IntersectionObserver(function (entries, observer) {
-                    entries.forEach(function (entry) {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
-
-                document.querySelectorAll('body > section:not(:first-of-type)').forEach(function (section) {
-                    section.classList.add('reveal');
-                    revealObserver.observe(section);
-                });
-
-                var staggerGroups = [
-                    '#solusi .grid > div',
-                    '#mockup .grid > article',
-                    '#fitur .grid > div',
-                    '#cara-kerja .grid > .step-card'
-                ];
-
-                staggerGroups.forEach(function (selector) {
-                    document.querySelectorAll(selector).forEach(function (item, index) {
-                        item.classList.add('reveal-item');
-                        item.style.setProperty('--reveal-delay', Math.min(index * 80, 240) + 'ms');
-                        revealObserver.observe(item);
-                    });
-                });
-            }
         })();
     </script>
+    <script type="module" src="../js/products-motion.min.js"></script>
 </body>
 </html>

@@ -13,7 +13,19 @@
  * script in <head>, never under prefers-reduced-motion, and removed again if this
  * file fails to load), so content is never stuck invisible.
  */
-import { animate, scroll, inView, hover } from "motion";
+import { animate as motionAnimate, scroll, inView, hover } from "motion";
+
+/* Motion commits an animation's final values as inline styles one frame after its
+   promise resolves, which would re-add anything a .then() callback just cleared and
+   block the page's own CSS (e.g. hover transforms). Run .then() callbacks after that
+   commit so cleanup sticks. The returned controls are otherwise untouched (scroll() needs them). */
+function animate(...args) {
+  const controls = motionAnimate(...args);
+  const then = controls.then.bind(controls);
+  controls.then = (onDone, onError) =>
+    then(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve(onDone && onDone())))), onError);
+  return controls;
+}
 
 const root = document.documentElement;
 window.__motionBooted = true;
