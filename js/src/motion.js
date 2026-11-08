@@ -182,10 +182,19 @@ function init() {
   /* Process section: line drawing + floating step icons                 */
   /* ------------------------------------------------------------------ */
   document.querySelectorAll("[data-draw-x]").forEach((line) => {
-    scroll(animate(line, { transform: ["scaleX(0)", "scaleX(1)"] }, { ease: "linear" }), {
-      target: line.parentElement,
-      offset: ["start 85%", "end 55%"],
-    });
+    const range = { target: line.parentElement, offset: ["start 85%", "end 55%"] };
+    scroll(animate(line, { transform: ["scaleX(0)", "scaleX(1)"] }, { ease: "linear" }), range);
+
+    // Light up each step box once the line reaches it (boxes sit at 0, 1/4 … 1 of the line).
+    const boxes = Array.from(line.parentElement.querySelectorAll(".process-step-box"));
+    if (boxes.length > 1) {
+      const last = boxes.length - 1;
+      scroll((progress) => {
+        // Light up as the line touches the box edge (half a box before its centre).
+        const edge = boxes[0].offsetWidth / 2 / (line.offsetWidth || 1);
+        boxes.forEach((box, i) => box.classList.toggle("is-active", progress >= i / last - edge));
+      }, range);
+    }
   });
   document.querySelectorAll("[data-draw-y]").forEach((line) => {
     scroll(animate(line, { transform: ["scaleY(0)", "scaleY(1)"] }, { ease: "linear" }), {

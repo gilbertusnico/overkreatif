@@ -365,7 +365,16 @@
     .cta-orb{ position:absolute; width:16rem; height:16rem; left:-5rem; top:-6rem; border-radius:999px; background:rgba(255,255,255,.08); filter:blur(48px); pointer-events:none; }
 
     /* Process: lines that draw in on scroll */
-    .process-line{ position:absolute; left:0; top:2rem; width:100%; height:1px; background:linear-gradient(90deg, rgba(96,165,250,0), #60a5fa 20%, #2563eb 80%, rgba(37,99,235,0)); transform-origin:left center; z-index:-1; }
+    /* Track + drawn line run from the centre of step 01 to the centre of step 05
+       (5 columns, 3rem gaps, 4rem boxes): right inset = one column width - half a box. */
+    .process-track, .process-line{ position:absolute; top:2rem; left:2rem; right:calc((100% - 12rem) / 5 - 2rem); height:1px; z-index:-1; }
+    .process-track{ background:rgba(255,255,255,.1); }
+    .process-line{ background:linear-gradient(90deg, #60a5fa, #2563eb); transform-origin:left center; }
+    /* Solid box (same tint as before: 20% brand blue over the dark section) so the line passes behind it */
+    .process-step-box{ background:linear-gradient(rgb(0 82 255 / .2), rgb(0 82 255 / .2)), #1b1c1c; transition:border-color .5s ease, box-shadow .5s ease; }
+    .process-step-box > span{ transition:color .5s ease; }
+    .process-step-box.is-active{ border-color:rgb(96 165 250 / .9); box-shadow:0 0 0 4px rgb(37 99 235 / .15), 0 0 28px -4px rgb(37 99 235 / .55); }
+    .process-step-box.is-active > span{ color:#fff; }
     .timeline-progress{ position:absolute; left:-1px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,#60a5fa,#2563eb); transform-origin:top center; border-radius:2px; }
     html:not(.motion-ready) .process-line{ display:none; }
     html:not(.motion-ready) .timeline-progress{ display:none; }
@@ -1135,11 +1144,11 @@
         </div>
         <!-- Process Steps -->
         <div class="relative show-desktop-ipadpro">
-          <div class="absolute left-0 w-full h-px bg-white/10 hidden md:block -z-10" style="top:2rem"></div>
+          <div class="process-track hidden md:block" aria-hidden="true"></div>
           <div class="process-line hidden md:block" data-draw-x aria-hidden="true"></div>
           <div class="grid grid-cols-1 md:grid-cols-5 gap-12" data-reveal-group="0.12">
             <div class="space-y-6" data-reveal="up">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
+              <div class="process-step-box w-16 h-16 rounded-2xl border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">01</span>
               </div>
@@ -1147,7 +1156,7 @@
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami memulai dengan wawasan dan riset untuk memahami peluang yang tepat.</p>
             </div>
             <div class="space-y-6" data-reveal="up">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
+              <div class="process-step-box w-16 h-16 rounded-2xl border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-pencil"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">02</span>
               </div>
@@ -1155,7 +1164,7 @@
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami membangun fondasi visual yang mencerminkan jati diri Anda.</p>
             </div>
             <div class="space-y-6" data-reveal="up">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
+              <div class="process-step-box w-16 h-16 rounded-2xl border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-devices"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">03</span>
               </div>
@@ -1163,7 +1172,7 @@
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami merancang dan membangun pengalaman digital yang menarik serta efektif.</p>
             </div>
             <div class="space-y-6" data-reveal="up">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
+              <div class="process-step-box w-16 h-16 rounded-2xl border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-layers"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">04</span>
               </div>
@@ -1171,7 +1180,7 @@
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami membuat konten yang menyampaikan pesan dengan jelas dan konsisten.</p>
             </div>
             <div class="space-y-6" data-reveal="up">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
+              <div class="process-step-box w-16 h-16 rounded-2xl border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-trending-up"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">05</span>
               </div>
