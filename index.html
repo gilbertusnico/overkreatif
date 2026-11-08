@@ -342,7 +342,52 @@
     }
 
     details[open] summary{ color: #0f172a; }
+
+    /* --- Motion layer (js/motion.min.js, built from js/src/motion.js) ---
+       Only hide things while html.motion-ready is set; the inline bootstrap below
+       never sets it under reduced motion and removes it if the script fails. */
+    html.motion-ready [data-reveal]:not([data-revealed]),
+    html.motion-ready [data-split]:not([data-revealed]){ opacity: 0; }
+    .split-mask{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.14em; margin-bottom:-.14em; }
+    .split-word{ display:inline-block; will-change:transform; }
+
+    header.sticky{ transition: box-shadow .35s ease, background-color .35s ease; }
+    header.sticky.is-scrolled{ box-shadow: 0 8px 30px -12px rgba(2,6,23,.12); }
+
+    /* Ambient blobs (hero, process, CTA) */
+    .hero-motion{ position:relative; isolation:isolate; }
+    .hero-blob{ position:absolute; z-index:-1; border-radius:999px; filter:blur(70px); pointer-events:none; will-change:transform; }
+    .hero-blob--a{ width:420px; height:420px; right:-60px; top:-40px; background:radial-gradient(circle, rgba(37,99,235,.18), rgba(37,99,235,0) 70%); }
+    .hero-blob--b{ width:320px; height:320px; left:-120px; bottom:-80px; background:radial-gradient(circle, rgba(0,71,209,.12), rgba(0,71,209,0) 70%); }
+    .system-glow{ position:absolute; z-index:0; border-radius:999px; filter:blur(90px); pointer-events:none; }
+    .system-glow--a{ width:520px; height:520px; left:-160px; top:10%; background:radial-gradient(circle, rgba(37,99,235,.28), transparent 70%); }
+    .system-glow--b{ width:420px; height:420px; right:-120px; bottom:-60px; background:radial-gradient(circle, rgba(96,165,250,.16), transparent 70%); }
+    .cta-orb{ position:absolute; width:16rem; height:16rem; left:-5rem; top:-6rem; border-radius:999px; background:rgba(255,255,255,.08); filter:blur(48px); pointer-events:none; }
+
+    /* Process: lines that draw in on scroll */
+    .process-line{ position:absolute; left:0; top:2rem; width:100%; height:1px; background:linear-gradient(90deg, rgba(96,165,250,0), #60a5fa 20%, #2563eb 80%, rgba(37,99,235,0)); transform-origin:left center; z-index:-1; }
+    .timeline-progress{ position:absolute; left:-1px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,#60a5fa,#2563eb); transform-origin:top center; border-radius:2px; }
+    html:not(.motion-ready) .process-line{ display:none; }
+    html:not(.motion-ready) .timeline-progress{ display:none; }
+
+    @media (min-width: 1280px){
+      .services-intro{ position:sticky; top:8rem; align-self:start; }
+    }
+    @media (max-width: 1024px){
+      .hero-blob--a{ width:260px; height:260px; }
+    }
     </style>
+    <!-- Motion bootstrap: flag the page as animatable before first paint (skipped for reduced motion).
+         If the motion bundle hasn't booted in 3s, un-hide everything. -->
+    <script>
+      (function(){
+        var d = document.documentElement;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('motion-ready');
+        setTimeout(function(){ if(!window.__motionBooted) d.classList.remove('motion-ready'); }, 3000);
+      })();
+    </script>
+    <link rel="modulepreload" href="js/motion.min.js" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -685,17 +730,19 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="px-margin-mobile md:px-margin-desktop py-stack-lg md:py-24 max-w-[1440px] mx-auto overflow-hidden">
+    <section class="px-margin-mobile md:px-margin-desktop py-stack-lg md:py-24 max-w-[1440px] mx-auto overflow-hidden hero-motion" data-hero>
+      <span class="hero-blob hero-blob--a" aria-hidden="true"></span>
+      <span class="hero-blob hero-blob--b" aria-hidden="true"></span>
       <div class="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-12 items-center gap-16-mobile">
-        <div class="space-y-stack-md">
-          <h1 class="text-4xl md:text-[3.4rem] leading-none font-extrabold font-display-lg max-w-none">
+        <div class="space-y-stack-md" data-hero-copy>
+          <h1 data-split class="text-4xl md:text-[3.4rem] leading-none font-extrabold font-display-lg max-w-none">
             Strategi dan solusi digital untuk <span class="text-primary-container">pertumbuhan bisnis.</span>
           </h1>
-          <p class="text-body-lg text-on-surface-variant max-w-md">
+          <p class="text-body-lg text-on-surface-variant max-w-md" data-reveal="up">
             Kami membantu bisnis membangun identitas merek, website, aplikasi, dan pengalaman digital yang relevan serta berdampak.
           </p>
-          <div class="flex items-center gap-stack-lg pt-4 flex-col-mobile">
-            <a class="bg-primary-container text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:opacity-90 transition-opacity w-full-mobile btn-ux" href="#work">
+          <div class="flex items-center gap-stack-lg pt-4 flex-col-mobile" data-reveal="up">
+            <a class="bg-primary-container text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:opacity-90 transition-opacity w-full-mobile btn-ux" href="#work" data-magnetic>
               Lihat Portofolio Kami <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
             </a>
             <a class="text-primary font-bold flex items-center gap-1 group w-full-mobile h-56-mobile" href="#services">
@@ -703,7 +750,7 @@
             </a>
           </div>
         </div>
-        <div class="relative">
+        <div class="relative" data-hero-visual>
           <img class="lazy-img is-loading" fetchpriority="high" decoding="async" src="img/portofolio-all.webp" srcset="img/portofolio-all.webp 840w, img/portofolio-all-full.webp 1402w" sizes="(min-width: 1024px) 42vw, 100vw" width="1402" height="1122" alt="Pilihan proyek identitas merek, website, dan pengalaman digital Overkreatif" />
         </div>
       </div>
@@ -711,16 +758,16 @@
     <!-- Logo Cloud -->
     <section class="bg-surface-container-low py-16">
       <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop">
-        <p class="text-label-caps font-label-caps text-on-surface-variant mb-stack-lg uppercase tracking-widest text-center">Dipercaya oleh bisnis dengan visi besar dari berbagai industri</p>
-        <div class="flex flex-wrap justify-center items-center gap-10 opacity-40 imggray">
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/24.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/20.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/21.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/22.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/23.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/25.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/26.webp" width="300" height="210" alt="" /></div>
-          <div class=""><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/27.webp" width="300" height="210" alt="" /></div>
+        <p class="text-label-caps font-label-caps text-on-surface-variant mb-stack-lg uppercase tracking-widest text-center" data-reveal="fade">Dipercaya oleh bisnis dengan visi besar dari berbagai industri</p>
+        <div class="flex flex-wrap justify-center items-center gap-10 opacity-40 imggray" data-reveal-group="0.06">
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/24.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/20.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/21.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/22.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/23.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/25.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/26.webp" width="300" height="210" alt="" /></div>
+          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/27.webp" width="300" height="210" alt="" /></div>
         </div>
       </div>
     </section>
@@ -728,14 +775,14 @@
     <!-- PRODUCT SECTION -->
     <section id="produk" class="border-y border-gray-100 bg-gray-50 py-16 font-['Nunito'] md:py-20">
       <div class="mx-auto max-w-6xl px-6">
-        <div class="mx-auto mb-10 max-w-2xl text-center md:mb-12">
+        <div class="mx-auto mb-10 max-w-2xl text-center md:mb-12" data-reveal="blur">
           <span class="mb-2 block text-sm font-bold uppercase tracking-wider text-blue-600">Produk Overkreatif</span>
           <h2 class="text-3xl font-extrabold leading-tight text-gray-900 md:text-4xl">Solusi digital untuk <span class="text-blue-600">operasional bisnis</span>.</h2>
           <p class="mx-auto mt-4 max-w-xl leading-relaxed text-gray-600">Produk yang dirancang khusus untuk bisnis inventaris, penagihan, dan penyewaan.</p>
         </div>
 
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <article class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-reveal-group="0.12">
+          <article data-reveal="up" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
             <a class="relative block aspect-[16/10] overflow-hidden bg-slate-100 p-4" href="products/stockfolio.html" aria-label="Lihat sistem inventaris StockFolio">
               <img class="h-full w-full object-contain transition duration-500 group-hover:scale-[1.03]" loading="lazy" decoding="async" src="products/assets/dashboard.webp" width="840" height="391" alt="Dasbor inventaris StockFolio yang menampilkan ringkasan stok dan pergerakan barang" />
             </a>
@@ -750,7 +797,7 @@
             </div>
           </article>
 
-          <article class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <article data-reveal="up" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
             <a class="relative block aspect-[16/10] overflow-hidden bg-slate-100 p-4" href="products/billfolio.html" aria-label="Lihat perangkat lunak invoice BillFolio">
               <img class="h-full w-full object-contain transition duration-500 group-hover:scale-[1.03]" loading="lazy" decoding="async" src="products/assets/dashboard-billfolio.webp" width="840" height="446" alt="Dasbor BillFolio untuk invoice, status pembayaran, dan cash flow bisnis" />
             </a>
@@ -765,7 +812,7 @@
             </div>
           </article>
 
-          <article class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1">
+          <article data-reveal="up" class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg md:col-span-2 lg:col-span-1">
             <a class="relative block aspect-[16/10] overflow-hidden bg-slate-100 p-4" href="products/rentfolio.html" aria-label="Lihat katalog penyewaan RentFolio">
               <img class="h-full w-full object-contain transition duration-500 group-hover:scale-[1.03]" loading="lazy" decoding="async" src="products/assets/katalog-rentfolio.webp" width="840" height="452" alt="Katalog penyewaan pakaian RentFolio dengan pencarian produk serta filter kategori, ukuran, dan warna" />
             </a>
@@ -788,7 +835,7 @@
       <div class="max-w-6xl mx-auto px-6">
         
         <!-- Header -->
-        <div class="max-w-2xl mb-12">
+        <div class="max-w-2xl mb-12" data-reveal="blur">
           <span class="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block">Tentang Overkreatif</span>
           <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight transition-all duration-700 opacity-100 translate-y-0">
             Mitra digital dan solusi teknologi <span class="text-blue-600">siap menghadapi masa depan.</span>
@@ -796,27 +843,27 @@
         </div>
 
         <!-- Bento Grid Structure -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal-group="0.1">
           
           <!-- Card Utama (2 Column Width) -->
-          <div class="md:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between transition-all duration-700 opacity-100 translate-y-0">
+          <div data-reveal="scale" class="md:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between transition-all duration-700 opacity-100 translate-y-0">
             <div>
               <h3 class="text-xl font-bold text-gray-900 mb-3">Solusi Menyeluruh untuk Pertumbuhan Bisnis</h3>
               <p class="text-gray-600 leading-relaxed mb-6 transition-all duration-700 opacity-100 translate-y-0">
                 Overkreatif adalah agensi digital independen yang membantu berbagai bisnis membangun sistem web modern, aplikasi mobile, dan strategi Digital Marketing yang terukur. Di tengah perkembangan teknologi yang pesat, kami mengintegrasikan pengujian keamanan siber dan kecerdasan buatan agar setiap solusi tetap relevan, aman, dan kompetitif.
               </p>
             </div>
-            <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
-              <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Sistem Web</span>
-              <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Aplikasi Mobile</span>
-              <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Digital Marketing</span>
-              <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Keamanan Siber</span>
-              <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Solusi AI</span>
+            <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-100" data-reveal-group="0.06" data-reveal-delay="0.35">
+              <span data-reveal="scale" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Sistem Web</span>
+              <span data-reveal="scale" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Aplikasi Mobile</span>
+              <span data-reveal="scale" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Digital Marketing</span>
+              <span data-reveal="scale" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Keamanan Siber</span>
+              <span data-reveal="scale" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">Solusi AI</span>
             </div>
           </div>
 
           <!-- Stat Card / Metric 1 -->
-          <div class="bg-blue-600 text-white p-8 rounded-2xl shadow-sm flex flex-col justify-between transition-all duration-700 opacity-100 translate-y-0">
+          <div data-reveal="scale" class="bg-blue-600 text-white p-8 rounded-2xl shadow-sm flex flex-col justify-between transition-all duration-700 opacity-100 translate-y-0">
             <div>
               <svg class="icon text-4xl mb-4 opacity-90" aria-hidden="true" focusable="false"><use href="#icon-shield-check"></use></svg>
               <h3 class="text-2xl font-extrabold mb-2">Aman &amp; Teruji</h3>
@@ -830,7 +877,7 @@
           </div>
 
           <!-- Card Feature 2 -->
-          <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 transition-all duration-700 opacity-100 translate-y-0">
+          <div data-reveal="scale" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 transition-all duration-700 opacity-100 translate-y-0">
             <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mb-4 text-gray-900">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-brain"></use></svg>
             </div>
@@ -841,7 +888,7 @@
           </div>
 
           <!-- Card Feature 3 (2 Column Width) -->
-          <div class="md:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between transition-all duration-700 opacity-100 translate-y-0">
+          <div data-reveal="scale" class="md:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between transition-all duration-700 opacity-100 translate-y-0">
             <div>
               <h4 class="text-lg font-bold text-gray-900 mb-1">Siap Bertransformasi Digital?</h4>
               <p class="text-gray-600 text-sm transition-all duration-700 opacity-100 translate-y-0">Diskusikan kebutuhan produk bisnis atau sistem digital Anda bersama tim kami.</p>
@@ -858,7 +905,7 @@
     <!-- Selected Work -->
     <section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-[1440px] mx-auto" id="work">
       <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-        <div>
+        <div data-reveal="blur">
           <p class="text-label-caps font-label-caps text-primary-container mb-2">KARYA PILIHAN</p>
           <h2 class="text-headline-md md:text-5xl font-black">Portofolio yang memberi <span class="text-primary-container">dampak.</span></h2>
         </div>
@@ -866,9 +913,9 @@
           Lihat Semua Proyek <svg class="icon text-2xl group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
         </a>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md" data-reveal-group="0.14">
         <!-- Project Card 1 -->
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 lazy-img is-loading" loading="lazy" decoding="async" src="img/colitte.webp" width="840" height="473" alt="Sistem identitas merek Colitte oleh Overkreatif" />
           </div>
@@ -881,7 +928,7 @@
           </div>
         </div>
         <!-- Project Card 2 -->
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/jalenta.webp" width="840" height="473" alt="Sistem identitas merek Jalenta oleh Overkreatif" />
           </div>
@@ -894,7 +941,7 @@
           </div>
         </div>
         <!-- Project Card 3 -->
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/sjm.webp" width="840" height="473" alt="Desain dan pengembangan website SJM oleh Overkreatif" />
           </div>
@@ -907,7 +954,7 @@
           </div>
         </div>
         <!-- Project Card 4 -->
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/kordate.webp" width="840" height="473" alt="Desain dan pengembangan website Kordate oleh Overkreatif" />
           </div>
@@ -921,8 +968,8 @@
         </div>
       </div>
       <br />
-      <div class="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-stack-md">
-        <div class="group cursor-pointer card">
+      <div class="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-stack-md" data-reveal-group="0.1">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/jayantaka.webp" width="700" height="394" alt="Sistem identitas merek Jayantaka Pratama Amerta oleh Overkreatif" />
           </div>
@@ -934,7 +981,7 @@
             <svg class="icon text-2xl text-primary group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
           </div>
         </div>
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/pdsa.webp" width="700" height="394" alt="Sistem identitas merek PDSA oleh Overkreatif" />
           </div>
@@ -946,7 +993,7 @@
             <svg class="icon text-2xl text-primary group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
           </div>
         </div>
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/findcontact.webp" width="700" height="394" alt="Desain aplikasi mobile Find Contact oleh Overkreatif" />
           </div>
@@ -958,7 +1005,7 @@
             <svg class="icon text-2xl text-primary group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
           </div>
         </div>
-        <div class="group cursor-pointer card">
+        <div class="group cursor-pointer card" data-reveal="card">
           <div class="bg-surface-container rounded-2xl overflow-hidden mb-6 aspect-video relative">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" src="img/landmark.webp" width="700" height="394" alt="Desain gim mobile Landmark Master oleh Overkreatif" />
           </div>
@@ -976,55 +1023,55 @@
     <!-- Services Grid -->
     <section class="px-margin-mobile md:px-margin-desktop py-section-gap max-w-[1440px] mx-auto bgservices" id="services">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-12 xl:gap-16">
-        <div>
+        <div class="services-intro" data-reveal="left">
           <p class="text-label-caps font-label-caps text-primary-container mb-2">LAYANAN KAMI</p>
           <h2 class="text-headline-md font-extrabold mb-6">Layanan digital untuk mendorong <span class="text-primary-container">bisnis Anda maju.</span></h2>
           <p class="text-on-surface-variant">Dari identitas merek hingga teknologi, kami merancang solusi yang menjawab kebutuhan bisnis Anda.</p>
         </div>
-        <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <article class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
+        <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-group="0.08">
+          <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-pencil"></use></svg>
             </div>
             <h3 class="text-headline-sm font-headline-sm mb-4">Identitas Merek</h3>
             <p class="text-on-surface-variant">Membangun identitas visual dan sistem merek yang mudah dikenali, konsisten, dan dipercaya.</p>
           </article>
-          <article class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
+          <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-code"></use></svg>
             </div>
             <h3 class="text-headline-sm font-headline-sm mb-4">Pengembangan Website</h3>
             <p class="text-on-surface-variant">Merancang dan membangun website yang cepat, responsif, dan siap mendukung pertumbuhan bisnis.</p>
           </article>
-          <article class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
+          <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-smartphone"></use></svg>
             </div>
             <h3 class="text-headline-sm font-headline-sm mb-4">Pengembangan Aplikasi Mobile</h3>
             <p class="text-on-surface-variant">Mengembangkan aplikasi mobile yang intuitif untuk menghubungkan bisnis dengan pelanggan.</p>
           </article>
-          <article class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
+          <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-megaphone"></use></svg>
             </div>
             <h3 class="text-headline-sm font-headline-sm mb-4">Digital Marketing</h3>
             <p class="text-on-surface-variant">Menjangkau audiens yang tepat melalui strategi digital yang terukur dan berorientasi hasil.</p>
           </article>
-          <article class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
+          <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg>
             </div>
             <h3 class="text-headline-sm font-headline-sm mb-4">Pengujian Keamanan Siber</h3>
             <p class="text-on-surface-variant">Mengidentifikasi kerentanan dan membantu menjaga sistem digital bisnis tetap aman.</p>
           </article>
-          <article class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
+          <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-brain"></use></svg>
             </div>
             <h3 class="text-headline-sm font-headline-sm mb-4">Solusi AI</h3>
             <p class="text-on-surface-variant">Memanfaatkan AI untuk menyederhanakan proses, meningkatkan efisiensi, dan membuka peluang baru.</p>
           </article>
-          <article class="md:col-span-2 p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service md:flex md:items-center md:gap-8">
+          <article data-reveal="up" class="md:col-span-2 p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service md:flex md:items-center md:gap-8">
             <div class="w-12 h-12 shrink-0 bg-primary-container text-white rounded-full flex items-center justify-center mb-6 md:mb-0">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-camera"></use></svg>
             </div>
@@ -1039,13 +1086,13 @@
     <!-- Philosophy -->
     <section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-[1440px] mx-auto border-t border-outline-variant/20 pt-24" id="think">
       <div class="mb-20">
-        <div>
+        <div data-reveal="blur">
           <p class="text-label-caps font-label-caps text-primary-container mb-2">CARA KAMI BERPIKIR</p>
           <h2 class="text-headline-md md:text-5xl font-black max-w-none">Desain yang baik bukan hanya soal tampilan. <br />Yang penting juga <span class="text-primary-container">cara kerjanya.</span></h2>
         </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <div class="space-y-4 how-think">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12" data-reveal-group="0.14">
+        <div class="space-y-4 how-think" data-reveal="up">
           <div class="w-10 h-10 rounded-full border border-primary-container/30 flex items-center justify-center text-primary-container circle-how-think">
             <svg class="icon text-sm" aria-hidden="true" focusable="false"><use href="#icon-circle"></use></svg>
           </div>
@@ -1054,7 +1101,7 @@
             <p class="text-on-surface-variant">Kami menyederhanakan gagasan kompleks menjadi bahasa visual yang jelas dan menarik.</p>
           </div>
         </div>
-        <div class="space-y-4 how-think">
+        <div class="space-y-4 how-think" data-reveal="up">
           <div class="w-10 h-10 rounded-full border border-primary-container/30 flex items-center justify-center text-primary-container circle-how-think">
             <svg class="icon text-sm" aria-hidden="true" focusable="false"><use href="#icon-circle"></use></svg>
           </div>
@@ -1063,7 +1110,7 @@
             <p class="text-on-surface-variant">Kami merancang untuk membangun kredibilitas dan konsistensi, bukan sekadar mencari perhatian.</p>
           </div>
         </div>
-        <div class="space-y-4 how-think">
+        <div class="space-y-4 how-think" data-reveal="up">
           <div class="w-10 h-10 rounded-full border border-primary-container/30 flex items-center justify-center text-primary-container circle-how-think">
             <svg class="icon text-sm" aria-hidden="true" focusable="false"><use href="#icon-circle"></use></svg>
           </div>
@@ -1076,8 +1123,10 @@
     </section>
     <!-- The System (Dark Section) -->
     <section class="bg-on-background text-white py-section-gap mt-section-gap overflow-hidden relative" id="system">
+      <span class="system-glow system-glow--a" data-parallax="80" aria-hidden="true"></span>
+      <span class="system-glow system-glow--b" data-parallax="-60" aria-hidden="true"></span>
       <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
-        <div class="mb-24 m-24-mobile text-center">
+        <div class="mb-24 m-24-mobile text-center" data-reveal="blur">
           <p class="text-label-caps font-label-caps text-primary-fixed mb-4">PROSES KAMI</p>
           <h2 class="text-headline-md md:text-5xl font-extrabold mb-6">Proses terstruktur <br class="hide-mobile" />yang menghasilkan dampak.</h2>
           <p class="text-on-tertiary-container text-body-lg max-w-3xl mx-auto mb-8 mb-8-mobile">
@@ -1086,42 +1135,43 @@
         </div>
         <!-- Process Steps -->
         <div class="relative show-desktop-ipadpro">
-          <div class="absolute top-1/2 left-0 w-full h-px bg-white/10 hidden md:block -z-10"></div>
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-12">
-            <div class="space-y-6">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative">
+          <div class="absolute left-0 w-full h-px bg-white/10 hidden md:block -z-10" style="top:2rem"></div>
+          <div class="process-line hidden md:block" data-draw-x aria-hidden="true"></div>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-12" data-reveal-group="0.12">
+            <div class="space-y-6" data-reveal="up">
+              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">01</span>
               </div>
               <h4 class="font-bold text-lg">Strategi</h4>
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami memulai dengan wawasan dan riset untuk memahami peluang yang tepat.</p>
             </div>
-            <div class="space-y-6">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative">
+            <div class="space-y-6" data-reveal="up">
+              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-pencil"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">02</span>
               </div>
               <h4 class="font-bold text-lg">Identitas</h4>
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami membangun fondasi visual yang mencerminkan jati diri Anda.</p>
             </div>
-            <div class="space-y-6">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative">
+            <div class="space-y-6" data-reveal="up">
+              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-devices"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">03</span>
               </div>
               <h4 class="font-bold text-lg">Pengalaman Digital</h4>
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami merancang dan membangun pengalaman digital yang menarik serta efektif.</p>
             </div>
-            <div class="space-y-6">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative">
+            <div class="space-y-6" data-reveal="up">
+              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-layers"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">04</span>
               </div>
               <h4 class="font-bold text-lg">Konten</h4>
               <p class="text-on-tertiary-container text-sm leading-relaxed">Kami membuat konten yang menyampaikan pesan dengan jelas dan konsisten.</p>
             </div>
-            <div class="space-y-6">
-              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative">
+            <div class="space-y-6" data-reveal="up">
+              <div class="w-16 h-16 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center relative" data-float>
                 <svg class="icon text-2xl text-primary-fixed" aria-hidden="true" focusable="false"><use href="#icon-trending-up"></use></svg>
                 <span class="absolute -top-3 -left-3 text-[10px] font-black tracking-widest text-primary-fixed">05</span>
               </div>
@@ -1132,8 +1182,9 @@
         </div>
 
         <div class="relative pl-12 border-l border-outline/30 space-y-16 show-tablet-mobile">
+          <span class="timeline-progress" data-draw-y aria-hidden="true"></span>
           <!-- Step 1 -->
-          <div class="relative">
+          <div class="relative" data-reveal="right">
             <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
               <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
             </div>
@@ -1142,7 +1193,7 @@
             <p class="text-on-tertiary-container/70">Kami memulai dengan wawasan dan riset untuk memahami peluang yang tepat.</p>
           </div>
           <!-- Step 2 -->
-          <div class="relative">
+          <div class="relative" data-reveal="right">
             <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
               <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-pencil"></use></svg>
             </div>
@@ -1151,7 +1202,7 @@
             <p class="text-on-tertiary-container/70">Kami membangun fondasi visual yang mencerminkan jati diri Anda.</p>
           </div>
           <!-- Step 3 -->
-          <div class="relative">
+          <div class="relative" data-reveal="right">
             <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
               <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-layers"></use></svg>
             </div>
@@ -1160,7 +1211,7 @@
             <p class="text-on-tertiary-container/70">Kami merancang dan membangun pengalaman digital yang menarik serta efektif.</p>
           </div>
           <!-- Step 4 -->
-          <div class="relative">
+          <div class="relative" data-reveal="right">
             <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
               <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
             </div>
@@ -1178,7 +1229,7 @@
       <div class="max-w-4xl mx-auto px-6">
         
         <!-- Title Section -->
-        <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-center max-w-2xl mx-auto mb-16" data-reveal="blur">
           <span class="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block">FAQ</span>
           <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">
             Pertanyaan yang Sering Diajukan
@@ -1189,10 +1240,10 @@
         </div>
 
         <!-- Accordion List -->
-        <div class="space-y-4">
+        <div class="space-y-4" data-reveal-group="0.08">
           
           <!-- Item 1 -->
-          <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
+          <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
               <span>Apa itu Overkreatif?</span>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
@@ -1203,7 +1254,7 @@
           </details>
 
           <!-- Item 2 -->
-          <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
+          <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
               <span>Layanan apa saja yang disediakan Overkreatif?</span>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
@@ -1223,7 +1274,7 @@
           </details>
 
           <!-- Item 3 -->
-          <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
+          <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
               <span>Mengapa bisnis membutuhkan integrasi AI dan audit keamanan?</span>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
@@ -1234,7 +1285,7 @@
           </details>
 
           <!-- Item 4 -->
-          <details class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
+          <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
               <span>Bagaimana cara mulai berkonsultasi dengan Overkreatif?</span>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
@@ -1250,30 +1301,31 @@
 
     <!-- Final CTA -->
     <section class="px-margin-mobile md:px-margin-desktop py-section-gap max-w-[1440px] mx-auto final-cta">
-      <div class="bg-primary-container rounded-[40px] p-12 md:p-24 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-12 div-cta">
+      <div class="bg-primary-container rounded-[40px] p-12 md:p-24 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-12 div-cta" data-reveal="scale">
+        <span class="cta-orb" data-parallax="40" aria-hidden="true"></span>
         <div class="relative z-10 max-w-xl">
           <h2 class="text-display-lg-mobile md:text-5xl font-black mb-6">Mari bangun sesuatu yang berkesan.</h2>
           <p class="text-primary-container-on opacity-90 text-lg">Punya proyek? Mari ciptakan pengalaman merek yang memberi dampak.</p>
         </div>
         <div class="relative z-10 flex flex-col items-center gap-4">
-          <a class="bg-white text-primary-container px-10 py-5 rounded-full font-bold flex items-center gap-2 hover:bg-surface-bright transition-colors group" href="mailto:overkreatif@gmail.com">
+          <a class="bg-white text-primary-container px-10 py-5 rounded-full font-bold flex items-center gap-2 hover:bg-surface-bright transition-colors group" href="mailto:overkreatif@gmail.com" data-magnetic>
             Hubungi Kami <svg class="icon text-2xl group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
           </a>
           <a class="text-sm border-b border-white/30 hover:border-white transition-all pb-1" href="mailto:overkreatif@gmail.com" style="display: none;">Atau kirim email ke overkreatif@gmail.com</a>
         </div>
         <!-- Decorative circle -->
-        <div class="absolute -right-24 -bottom-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-24 -bottom-24 w-96 h-96 bg-white/10 rounded-full blur-3xl" data-parallax="-50" aria-hidden="true"></div>
       </div>
     </section>
     <!-- Footer -->
     <footer class="bg-surface dark:bg-surface-container-low border-t border-outline-variant/30 pt-stack-lg pb-12">
       <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-stack-lg mb-24">
-          <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-stack-lg mb-24" data-reveal-group="0.08">
+          <div class="space-y-6" data-reveal="up">
             <div class="text-headline-sm font-headline-sm font-black text-on-surface"><a href="#"><img class="logo" loading="lazy" decoding="async" src="img/logo.webp" width="200" height="99" alt="Overkreatif" /></a></div>
             <p class="text-on-surface-variant max-w-xs">Studio Kreatif Digital. Membangun merek untuk era digital.</p>
           </div>
-          <div>
+          <div data-reveal="up">
             <h5 class="text-label-caps font-label-caps text-primary mb-6 uppercase">Navigasi</h5>
             <ul class="space-y-4">
               <li><a class="text-secondary hover:text-primary transition-colors" href="#produk">Produk</a></li>
@@ -1285,7 +1337,7 @@
               <li><a class="text-secondary hover:text-primary transition-colors" href="#faq">FAQ</a></li>
             </ul>
           </div>
-          <div>
+          <div data-reveal="up">
             <h5 class="text-label-caps font-label-caps text-primary mb-6 uppercase">Layanan</h5>
             <ul class="space-y-4">
               <li><a class="text-secondary hover:text-primary transition-colors">Identitas Merek</a></li>
@@ -1297,7 +1349,7 @@
               <li><a class="text-secondary hover:text-primary transition-colors">Fotografi &amp; Videografi</a></li>
             </ul>
           </div>
-          <div>
+          <div data-reveal="up">
             <h5 class="text-label-caps font-label-caps text-primary mb-6 uppercase">Kontak</h5>
             <ul class="space-y-4">
               <li class="text-secondary"><a href="mailto:overkreatif@gmail.com">overkreatif@gmail.com</a></li>
@@ -1534,6 +1586,7 @@
 
     })();
     </script>
+    <script type="module" src="js/motion.min.js"></script>
   </body>
 
 </html>

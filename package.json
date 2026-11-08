@@ -1,12 +1,15 @@
 {
   "scripts": {
-    "build:css": "tailwindcss -i ./tailwind.input.css -o ./styles.css --minify"
+    "build:css": "tailwindcss -i ./tailwind.input.css -o ./styles.css --minify",
+    "build:motion": "esbuild js/src/motion.js --bundle --minify --format=esm --target=es2019 --outfile=js/motion.min.js"
   },
   "dependencies": {
     "jsdom": "^29.1.1"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",
+    "esbuild": "0.25.10",
+    "motion": "14.7.1",
     "tailwindcss": "4.3.3"
   },
   "overrides": {
