@@ -335,19 +335,19 @@
               <p class="mt-6 max-w-[46ch] text-lg leading-relaxed text-muted-foreground">Produk, gudang, dan transaksi terus bertambah, tapi kamu makin susah tahu kondisi stok yang sebenarnya.</p>
             </div>
             <div class="divide-y divide-border border-t border-border">
-              <div class="group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8 transition-colors hover:bg-card"><span class="text-sm font-black text-brand">01</span>
+              <div class="pain-row group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8"><span class="text-sm font-black text-brand">01</span>
                 <div class="min-w-0">
                   <h3 class="text-2xl">Stok sulit dipantau</h3>
                   <p class="mt-2 leading-relaxed text-muted-foreground">Datanya tersebar di banyak file, jadi cek stok saja butuh waktu lama.</p>
                 </div>
               </div>
-              <div class="group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8 transition-colors hover:bg-card"><span class="text-sm font-black text-brand">02</span>
+              <div class="pain-row group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8"><span class="text-sm font-black text-brand">02</span>
                 <div class="min-w-0">
                   <h3 class="text-2xl">Keluar-masuk barang tidak tercatat rapi</h3>
                   <p class="mt-2 leading-relaxed text-muted-foreground">Barang masuk, keluar, penyesuaian, dan transfer sering tidak punya riwayat yang jelas.</p>
                 </div>
               </div>
-              <div class="group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8 transition-colors hover:bg-card"><span class="text-sm font-black text-brand">03</span>
+              <div class="pain-row group grid grid-cols-[auto_minmax(0,1fr)] gap-6 py-8"><span class="text-sm font-black text-brand">03</span>
                 <div class="min-w-0">
                   <h3 class="text-2xl">Keputusan jadi lambat</h3>
                   <p class="mt-2 leading-relaxed text-muted-foreground">Padahal data stok seharusnya langsung kasih tahu kamu apa yang perlu ditangani duluan.</p>
@@ -703,6 +703,28 @@
     header > div > nav a.nav-active {
       background: var(--brand-soft, #e8edff);
       color: var(--brand, #1e49f4);
+    }
+
+    /* "Tantangan" rows: hover lifts a soft card behind the row (wider than the text, rounded,
+       light shadow) instead of a hard-edged fill. Mouse + wide screens only, so the card's
+       negative inset can never cause sideways scroll on small screens. */
+    @media (hover: hover) and (min-width: 1024px) {
+      .pain-row { position: relative; isolation: isolate; }
+      .pain-row::before {
+        content: "";
+        position: absolute;
+        inset: 8px -1.5rem;
+        z-index: -1;
+        border-radius: 1rem;
+        background: var(--card, #fff);
+        box-shadow: inset 3px 0 0 var(--brand, #1e49f4), 0 1px 2px rgba(0, 0, 0, 0.04), 0 18px 40px -24px rgba(0, 0, 0, 0.22);
+        opacity: 0;
+        transform: scale(0.97);
+        transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .pain-row:hover::before { opacity: 1; transform: scale(1); }
+      .pain-row h3 { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease; }
+      .pain-row:hover h3 { transform: translateX(6px); color: var(--brand, #1e49f4); }
     }
 
     /* Pause the marquee for users who prefer reduced motion */
