@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build:css": "tailwindcss -i ./tailwind.input.css -o ./styles.css --minify",
-    "build:motion": "esbuild js/src/motion.js js/src/products-motion.js --bundle --minify --format=esm --target=es2019 --outdir=js --entry-names=[name].min"
+    "build:motion": "esbuild js/src/motion.js js/src/products-motion.js --bundle --minify --format=esm --target=es2019 --outdir=js --entry-names=[name].min",
+    "build:products-css": "npx -y tailwindcss@3.4.19 -c products/tailwind.config.cjs -i products/tailwind.input.css --minify --content products/billfolio.html -o products/billfolio.css && npx -y tailwindcss@3.4.19 -c products/tailwind.config.cjs -i products/tailwind.input.css --minify --content products/rentfolio.html -o products/rentfolio.css"
   },
   "dependencies": {
     "jsdom": "^29.1.1"
