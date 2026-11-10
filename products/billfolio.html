@@ -130,13 +130,15 @@
     }
     </script>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Nunito -->
+    <!-- Tailwind v3 utilities, prebuilt by `npm run build:products-css` (replaces the Play CDN script that sat here;
+         keep it before the page <style> so page CSS still overrides Tailwind defaults) -->
+    <link rel="stylesheet" href="billfolio.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" /></noscript>
     <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg: #f3f1ee;
@@ -563,7 +565,7 @@
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
         <div class="flex items-center gap-2">
-            <a href="../index.html"><img src="assets/logo.png" alt="Overkreatif" class="w-24 h-auto object-contain"></a>
+            <a href="../index.html"><img src="assets/logo-200.webp" srcset="assets/logo-200.webp 1x, assets/logo-400.webp 2x" width="200" height="99" alt="Overkreatif" class="w-24 h-auto object-contain"></a>
         </div>
             
             <div class="desktop-nav hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
@@ -579,7 +581,7 @@
             </div>
 
             <button type="button" class="mobile-menu inline-flex items-center justify-center w-11 h-11 rounded-xl border border-slate-200 bg-white text-slate-900" aria-label="Buka atau tutup menu" id="mobileMenuButton">
-                <i data-lucide="menu" class="w-5 h-5"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" aria-hidden="true" class="lucide lucide-menu w-5 h-5"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
             </button>
 
             <div class="mobile-menu-panel" id="mobileMenuPanel">
@@ -598,7 +600,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <!-- Badge -->
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-6">
-                <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" aria-hidden="true" class="lucide lucide-sparkles w-4 h-4 text-blue-600"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
                 <span class="eyebrow-label">Otomatisasi Invoice &amp; Cash Flow</span>
             </div>
 
@@ -617,7 +619,7 @@
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="mailto:overkreatif@gmail.com?subject=Request%20Demo%20BillFolio" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-white gradient-bg rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition duration-200 flex items-center justify-center gap-2">
                     <span>Request Demo</span>
-                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-5 h-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </a>
             </div>
 
@@ -651,20 +653,20 @@
                 <!-- Manual workflow -->
                 <div class="p-8 rounded-2xl bg-slate-50 border border-slate-200/80">
                     <div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center mb-6">
-                        <i data-lucide="x-circle" class="w-6 h-6"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x-circle" aria-hidden="true" class="lucide lucide-x-circle w-6 h-6"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-4">Cara Manual</h3>
                     <ul class="space-y-3 text-slate-600 text-sm">
                         <li class="flex items-start gap-3">
-                            <i data-lucide="minus" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="minus" aria-hidden="true" class="lucide lucide-minus w-5 h-5 text-red-500 shrink-0 mt-0.5"><path d="M5 12h14"></path></svg>
                             <span>Bikin invoice satu per satu di Word atau spreadsheet.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i data-lucide="minus" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="minus" aria-hidden="true" class="lucide lucide-minus w-5 h-5 text-red-500 shrink-0 mt-0.5"><path d="M5 12h14"></path></svg>
                             <span>Cek bukti transfer satu per satu lewat WhatsApp.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i data-lucide="minus" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="minus" aria-hidden="true" class="lucide lucide-minus w-5 h-5 text-red-500 shrink-0 mt-0.5"><path d="M5 12h14"></path></svg>
                             <span>Buka mutasi rekening hanya untuk tahu siapa yang sudah bayar.</span>
                         </li>
                     </ul>
@@ -673,20 +675,20 @@
                 <!-- The BillFolio workflow -->
                 <div class="p-8 rounded-2xl bg-blue-50/50 border border-blue-200/80 relative overflow-hidden">
                     <div class="w-12 h-12 rounded-xl gradient-bg text-white flex items-center justify-center mb-6 shadow-md shadow-blue-500/20">
-                        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle-2" aria-hidden="true" class="lucide lucide-check-circle-2 w-6 h-6"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-4">Dengan BillFolio</h3>
                     <ul class="space-y-3 text-slate-700 text-sm">
                         <li class="flex items-start gap-3">
-                            <i data-lucide="check" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5 font-bold"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-5 h-5 text-blue-600 shrink-0 mt-0.5 font-bold"><path d="M20 6 9 17l-5-5"></path></svg>
                             <span>Tulis instruksi singkat, lalu <b>AI yang menyusun rincian invoice</b>.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i data-lucide="check" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5 font-bold"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-5 h-5 text-blue-600 shrink-0 mt-0.5 font-bold"><path d="M20 6 9 17l-5-5"></path></svg>
                             <span><b>Kelola beberapa ruang kerja dan perusahaan</b>, dengan hak akses yang jelas untuk setiap anggota tim.</span>
                         </li>
                         <li class="flex items-start gap-3">
-                            <i data-lucide="check" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5 font-bold"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check w-5 h-5 text-blue-600 shrink-0 mt-0.5 font-bold"><path d="M20 6 9 17l-5-5"></path></svg>
                             <span>Klien bayar lewat QRIS atau virtual account; status pembayaran ter-update otomatis dan dasbor cash flow kamu selalu terkini.</span>
                         </li>
                     </ul>
@@ -706,7 +708,7 @@
 
             <div class="grid lg:grid-cols-3 gap-6">
                 <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                    <img src="assets/dashboard-billfolio.png" alt="Dasbor BillFolio yang menampilkan pendapatan, status invoice, dan aktivitas terbaru" class="block w-full h-auto">
+                    <img src="assets/dashboard-billfolio-800.webp" srcset="assets/dashboard-billfolio-800.webp 800w, assets/dashboard-billfolio-1400.webp 1400w" sizes="(min-width: 1024px) 400px, calc(100vw - 2rem)" width="1723" height="913" loading="lazy" decoding="async" alt="Dasbor BillFolio yang menampilkan pendapatan, status invoice, dan aktivitas terbaru" class="block w-full h-auto">
                     <div class="p-6">
                         <p class="eyebrow-label text-xs text-blue-600">Ringkasan bisnis</p>
                         <h3 class="mt-2 text-xl font-bold text-slate-900">Dasbor</h3>
@@ -715,7 +717,7 @@
                 </article>
 
                 <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                    <img src="assets/client-billfolio.png" alt="Halaman pengelolaan klien BillFolio" class="block w-full h-auto">
+                    <img src="assets/client-billfolio-800.webp" srcset="assets/client-billfolio-800.webp 800w, assets/client-billfolio-1400.webp 1400w" sizes="(min-width: 1024px) 400px, calc(100vw - 2rem)" width="1821" height="864" loading="lazy" decoding="async" alt="Halaman pengelolaan klien BillFolio" class="block w-full h-auto">
                     <div class="p-6">
                         <p class="eyebrow-label text-xs text-blue-600">Pengelolaan klien</p>
                         <h3 class="mt-2 text-xl font-bold text-slate-900">Klien</h3>
@@ -724,7 +726,7 @@
                 </article>
 
                 <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                    <img src="assets/invoice-billfolio.png" alt="Halaman pengelolaan invoice BillFolio" class="block w-full h-auto">
+                    <img src="assets/invoice-billfolio-800.webp" srcset="assets/invoice-billfolio-800.webp 800w, assets/invoice-billfolio-1400.webp 1400w" sizes="(min-width: 1024px) 400px, calc(100vw - 2rem)" width="1561" height="1007" loading="lazy" decoding="async" alt="Halaman pengelolaan invoice BillFolio" class="block w-full h-auto">
                     <div class="p-6">
                         <p class="eyebrow-label text-xs text-blue-600">Pengelolaan invoice</p>
                         <h3 class="mt-2 text-xl font-bold text-slate-900">Invoice</h3>
@@ -747,7 +749,7 @@
                 <!-- Feature 1 -->
                 <div class="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition">
                     <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6">
-                        <i data-lucide="briefcase-business" class="w-6 h-6"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="briefcase-business" aria-hidden="true" class="lucide lucide-briefcase-business w-6 h-6"><path d="M12 12h.01"></path><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path><path d="M22 13a18.15 18.15 0 0 1-20 0"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Beberapa Ruang Kerja &amp; Perusahaan</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">
@@ -758,7 +760,7 @@
                 <!-- Feature 2 -->
                 <div class="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition">
                     <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6">
-                        <i data-lucide="users" class="w-6 h-6"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" aria-hidden="true" class="lucide lucide-users w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Anggota Tim &amp; Hak Akses</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">
@@ -769,7 +771,7 @@
                 <!-- Feature 3 -->
                 <div class="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition">
                     <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6">
-                        <i data-lucide="credit-card" class="w-6 h-6"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="credit-card" aria-hidden="true" class="lucide lucide-credit-card w-6 h-6"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line><path d="M6 14h2"></path></svg>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Pembayaran Online dengan Midtrans</h3>
                     <p class="text-slate-600 text-sm leading-relaxed">
@@ -865,7 +867,7 @@
             <div class="mt-8">
                 <a href="mailto:overkreatif@gmail.com?subject=Request%20Demo%20BillFolio" class="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-blue-600 bg-white rounded-xl shadow-xl hover:bg-blue-50 transition duration-200">
                     <span>Request Demo</span>
-                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-5 h-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </a>
             </div>
         </div>
@@ -875,7 +877,7 @@
     <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center gap-2">
-                <img src="assets/logo.png" alt="Overkreatif" class="w-24 h-auto brightness-0 invert">
+                <img src="assets/logo-200.webp" srcset="assets/logo-200.webp 1x, assets/logo-400.webp 2x" width="200" height="99" alt="Overkreatif" class="w-24 h-auto brightness-0 invert">
             </div>
             <p class="text-sm">© 2026 Overkreatif. Hak cipta dilindungi.</p>
             <div class="flex gap-6 text-sm">
@@ -887,26 +889,22 @@
         </div>
     </footer>
 
-    <!-- Initialize Lucide Icons -->
+    <!-- Mobile menu + scroll spy (icons are inline SVG, pre-rendered from Lucide 1.71.0) -->
     <script>
         (function () {
-            if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                window.lucide.createIcons();
-            }
 
             var menuButton = document.getElementById('mobileMenuButton');
             var mobileMenuPanel = document.getElementById('mobileMenuPanel');
 
-            // Static markup already ships the hamburger icon; only swap the
-            // icon via JS when the menu is actually opened (Lucide replaces
-            // <i data-lucide> with <svg>, so re-querying after each toggle
-            // would throw and break the close handler).
+            // Static markup already ships the hamburger icon; swap it for the
+            // close icon while the menu is open.
+            var MENU_ICONS = {
+                menu: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-lucide=\"menu\" aria-hidden=\"true\" class=\"lucide lucide-menu w-5 h-5\"><path d=\"M4 5h16\"></path><path d=\"M4 12h16\"></path><path d=\"M4 19h16\"></path></svg>",
+                x: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-lucide=\"x\" aria-hidden=\"true\" class=\"lucide lucide-x w-5 h-5\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg>"
+            };
             function setMenuIcon(name) {
                 if (!menuButton) return;
-                menuButton.innerHTML = '<i data-lucide="' + name + '" class="w-5 h-5"></i>';
-                if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                    window.lucide.createIcons();
-                }
+                menuButton.innerHTML = MENU_ICONS[name];
             }
 
             function closeMenu() {

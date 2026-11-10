@@ -121,15 +121,17 @@
     </script>
     
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts: Nunito & Playfair Display for Elegance -->
+    <!-- Tailwind v3 utilities, prebuilt by `npm run build:products-css` (replaces the Play CDN script that sat here;
+         keep it before the page <style> so page CSS still overrides Tailwind defaults) -->
+    <link rel="stylesheet" href="rentfolio.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..900;1,300..900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..900;1,300..900&family=Playfair+Display:wght@600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..900;1,300..900&family=Playfair+Display:wght@600;700;800&display=swap" /></noscript>
     
     <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
         :root {
@@ -246,7 +248,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between relative">
             
             <a href="../index.html" aria-label="Beranda Overkreatif" class="flex items-center">
-                <img src="assets/logo.png" alt="Overkreatif" class="h-auto w-24 object-contain" />
+                <img src="assets/logo-200.webp" srcset="assets/logo-200.webp 1x, assets/logo-400.webp 2x" width="200" height="99" alt="Overkreatif" class="h-auto w-24 object-contain" />
             </a>
 
             <!-- Desktop Nav Links -->
@@ -268,7 +270,7 @@
 
             <!-- Mobile Hamburger Button -->
             <button type="button" class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-line bg-white text-[#1A1A1A]" id="mobileMenuButton" aria-label="Buka atau tutup menu">
-                <i data-lucide="menu" class="w-5 h-5"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" aria-hidden="true" class="lucide lucide-menu w-5 h-5"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
             </button>
 
             <!-- Mobile Menu Dropdown -->
@@ -291,7 +293,7 @@
                 
                 <!-- Eyebrow Badge -->
                 <div class="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-[11px] font-black tracking-[0.14em] text-[#C5A880] mb-6 sm:mb-8">
-                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" aria-hidden="true" class="lucide lucide-sparkles w-3.5 h-3.5"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
                     <span>OVERKREATIF · KATALOG BUSANA &amp; PAKAIAN PENGANTIN</span>
                 </div>
 
@@ -310,7 +312,7 @@
                 <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a href="#showcase" class="w-full sm:w-auto rounded-xl bg-[#1A1A1A] px-7 py-3.5 text-sm font-black text-white hover:bg-[#C5A880] transition duration-200 flex items-center justify-center gap-2">
                         <span>Lihat Demo Katalog</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-4 h-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                     </a>
                     <a href="#features" class="w-full sm:w-auto rounded-xl border border-line bg-white px-7 py-3.5 text-sm font-black text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition duration-200">
                         Lihat Fitur
@@ -338,7 +340,7 @@
             <div class="mx-auto mt-12 max-w-6xl px-4 sm:px-6 lg:px-8">
                 <div class="rounded-2xl border border-line bg-white p-2 sm:p-3 shadow-xl">
                     <div class="overflow-hidden rounded-xl border border-line bg-[#1A1A1A]">
-                        <img src="assets/katalog-rentfolio.png" alt="Katalog penyewaan pakaian RentFolio dengan pencarian produk serta filter kategori, ukuran, dan warna" class="w-full h-auto block opacity-95" fetchpriority="high" />
+                        <img src="assets/katalog-rentfolio-1400.webp" srcset="assets/katalog-rentfolio-800.webp 800w, assets/katalog-rentfolio-1400.webp 1400w, assets/katalog-rentfolio-2000.webp 2000w" sizes="(min-width: 1152px) 1100px, calc(100vw - 3rem)" width="2540" height="1364" alt="Katalog penyewaan pakaian RentFolio dengan pencarian produk serta filter kategori, ukuran, dan warna" class="w-full h-auto block opacity-95" fetchpriority="high" />
                     </div>
                 </div>
                 <p class="mx-auto mt-4 max-w-3xl text-center text-sm leading-relaxed text-gray-600">Di katalog, penyewa bisa melihat koleksi, mencari berdasarkan nama, dan menyaring menurut kategori, ukuran, atau warna.</p>
@@ -401,7 +403,7 @@
                     <!-- Before -->
                     <div class="bg-white p-8 sm:p-12">
                         <div class="text-[12px] font-black tracking-[0.14em] text-red-500 flex items-center gap-2">
-                            <i data-lucide="x-circle" class="w-4 h-4"></i> SEBELUM (CARA MANUAL)
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x-circle" aria-hidden="true" class="lucide lucide-x-circle w-4 h-4"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg> SEBELUM (CARA MANUAL)
                         </div>
                         <h3 class="mt-6 text-2xl sm:text-3xl font-bold text-[#1A1A1A]">Serba manual</h3>
                         <ul class="mt-6 space-y-3 text-sm text-gray-600">
@@ -415,7 +417,7 @@
                     <!-- After (RentFolio) -->
                     <div class="bg-[#1A1A1A] p-8 sm:p-12 text-white">
                         <div class="text-[12px] font-black tracking-[0.14em] text-[#C5A880] flex items-center gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4"></i> SESUDAH (DENGAN RENTFOLIO)
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check-circle-2" aria-hidden="true" class="lucide lucide-check-circle-2 w-4 h-4"><circle cx="12" cy="12" r="10"></circle><path d="m16 9-5.5 5.5L8 12"></path></svg> SESUDAH (DENGAN RENTFOLIO)
                         </div>
                         <h3 class="mt-6 text-2xl sm:text-3xl font-bold text-white">Sistem Katalog Busana</h3>
                         <ul class="mt-6 space-y-3 text-sm text-gray-300">
@@ -445,7 +447,7 @@
                     <!-- Feature 1 -->
                     <div class="bg-paper p-8 rounded-2xl border border-line hover:border-[#C5A880] transition">
                         <div class="w-12 h-12 rounded-xl bg-white border border-line text-[#C5A880] flex items-center justify-center mb-6">
-                            <i data-lucide="layers" class="w-6 h-6"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layers" aria-hidden="true" class="lucide lucide-layers w-6 h-6"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
                         </div>
                         <h3 class="text-xl font-bold text-[#1A1A1A] mb-2">Pengelolaan Berbagai Varian</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -456,7 +458,7 @@
                     <!-- Feature 2 -->
                     <div class="bg-paper p-8 rounded-2xl border border-line hover:border-[#C5A880] transition">
                         <div class="w-12 h-12 rounded-xl bg-white border border-line text-[#C5A880] flex items-center justify-center mb-6">
-                            <i data-lucide="calendar-check-2" class="w-6 h-6"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="calendar-check-2" aria-hidden="true" class="lucide lucide-calendar-check-2 w-6 h-6"><path d="M 19 3 L 5 3"></path><path d="M 21 13 L 21 5"></path><path d="M 21 5 A2 2 0 0 0 19 3"></path><path d="M 3 19 A2 2 0 0 0 5 21"></path><path d="M 3 5 L 3 19"></path><path d="M 5 3 A2 2 0 0 0 3 5"></path><path d="m16 19 2 2 4-4"></path><path d="M16 2v3"></path><path d="M3 9h18"></path><path d="M5 21 L12.5 21"></path><path d="M8 2v3"></path></svg>
                         </div>
                         <h3 class="text-xl font-bold text-[#1A1A1A] mb-2">Pemeriksa Jadwal Bentrok</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -467,7 +469,7 @@
                     <!-- Feature 3 -->
                     <div class="bg-paper p-8 rounded-2xl border border-line hover:border-[#C5A880] transition">
                         <div class="w-12 h-12 rounded-xl bg-white border border-line text-[#C5A880] flex items-center justify-center mb-6">
-                            <i data-lucide="message-square" class="w-6 h-6"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-square" aria-hidden="true" class="lucide lucide-message-square w-6 h-6"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path></svg>
                         </div>
                         <h3 class="text-xl font-bold text-[#1A1A1A] mb-2">Integrasi WhatsApp</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -478,7 +480,7 @@
                     <!-- Feature 4 -->
                     <div class="bg-paper p-8 rounded-2xl border border-line hover:border-[#C5A880] transition">
                         <div class="w-12 h-12 rounded-xl bg-white border border-line text-[#C5A880] flex items-center justify-center mb-6">
-                            <i data-lucide="heart" class="w-6 h-6"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" aria-hidden="true" class="lucide lucide-heart w-6 h-6"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg>
                         </div>
                         <h3 class="text-xl font-bold text-[#1A1A1A] mb-2">Daftar Favorit &amp; Perencana Fitting</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -489,7 +491,7 @@
                     <!-- Feature 5 -->
                     <div class="bg-paper p-8 rounded-2xl border border-line hover:border-[#C5A880] transition">
                         <div class="w-12 h-12 rounded-xl bg-white border border-line text-[#C5A880] flex items-center justify-center mb-6">
-                            <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="shield-alert" aria-hidden="true" class="lucide lucide-shield-alert w-6 h-6"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
                         </div>
                         <h3 class="text-xl font-bold text-[#1A1A1A] mb-2">Blokir Tanggal oleh Admin</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -500,7 +502,7 @@
                     <!-- Feature 6 -->
                     <div class="bg-paper p-8 rounded-2xl border border-line hover:border-[#C5A880] transition">
                         <div class="w-12 h-12 rounded-xl bg-white border border-line text-[#C5A880] flex items-center justify-center mb-6">
-                            <i data-lucide="lock" class="w-6 h-6"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="lock" aria-hidden="true" class="lucide lucide-lock w-6 h-6"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                         </div>
                         <h3 class="text-xl font-bold text-[#1A1A1A] mb-2">Keandalan &amp; Keamanan Supabase</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
@@ -530,7 +532,7 @@
                             <p class="mt-3 text-sm text-gray-600 leading-relaxed">Pelanggan bisa melihat detail pakaian, memilih ukuran, dan mengecek tanggal yang masih kosong sebelum bertanya. Karena sudah tahu dari awal, chat bolak-balik jauh berkurang.</p>
                         </div>
                         <div class="rounded-2xl border border-line bg-white p-2 shadow-lg">
-                            <img src="assets/product-detail-rentfolio.png" alt="Halaman detail pakaian RentFolio dengan ukuran terpilih, rentang tanggal sewa, ketersediaan langsung, dan tombol pertanyaan pemesanan" class="w-full h-auto rounded-xl block" loading="lazy" decoding="async" />
+                            <img src="assets/product-detail-rentfolio-1400.webp" srcset="assets/product-detail-rentfolio-800.webp 800w, assets/product-detail-rentfolio-1400.webp 1400w" sizes="(min-width: 1024px) 640px, calc(100vw - 3rem)" width="1980" height="1364" alt="Halaman detail pakaian RentFolio dengan ukuran terpilih, rentang tanggal sewa, ketersediaan langsung, dan tombol pertanyaan pemesanan" class="w-full h-auto rounded-xl block" loading="lazy" decoding="async" />
                         </div>
                     </div>
 
@@ -542,7 +544,7 @@
                             <p class="mt-3 text-sm text-gray-600 leading-relaxed">Tim studio bisa melihat permintaan yang masuk lengkap dengan tanggal dan ukurannya, mengonfirmasi atau menolaknya, dan mengecek riwayat dari satu dasbor.</p>
                         </div>
                         <div class="rounded-2xl border border-line bg-white p-2 shadow-lg">
-                            <img src="assets/dashboard-rentfolio.png" alt="Dasbor admin RentFolio yang menampilkan jumlah permintaan pemesanan, permintaan tertunda, tindakan konfirmasi, dan riwayat pemesanan" class="w-full h-auto rounded-xl block" loading="lazy" decoding="async" />
+                            <img src="assets/dashboard-rentfolio-1400.webp" srcset="assets/dashboard-rentfolio-800.webp 800w, assets/dashboard-rentfolio-1400.webp 1400w, assets/dashboard-rentfolio-2000.webp 2000w" sizes="(min-width: 1024px) 640px, calc(100vw - 3rem)" width="2874" height="1374" alt="Dasbor admin RentFolio yang menampilkan jumlah permintaan pemesanan, permintaan tertunda, tindakan konfirmasi, dan riwayat pemesanan" class="w-full h-auto rounded-xl block" loading="lazy" decoding="async" />
                         </div>
                     </div>
                 </div>
@@ -667,7 +669,7 @@
                 <div class="mt-8">
                     <a href="mailto:overkreatif@gmail.com?subject=Request%20Demo%20RentFolio" class="inline-flex items-center gap-2 rounded-xl bg-[#C5A880] px-8 py-4 text-sm font-black text-white hover:bg-white hover:text-[#1A1A1A] transition duration-200">
                         <span>Request Demo RentFolio</span>
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right w-4 h-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                     </a>
                 </div>
             </div>
@@ -678,7 +680,7 @@
     <footer class="bg-black py-10 text-gray-400 text-xs border-t border-white/10">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
             <a href="../index.html" aria-label="Beranda Overkreatif" class="flex items-center">
-                <img src="assets/logo.png" alt="Overkreatif" class="h-auto w-24 brightness-0 invert" />
+                <img src="assets/logo-200.webp" srcset="assets/logo-200.webp 1x, assets/logo-400.webp 2x" width="200" height="99" alt="Overkreatif" class="h-auto w-24 brightness-0 invert" />
             </a>
             <div class="flex flex-wrap gap-6 text-gray-400 font-semibold">
                 <a href="#challenges" class="hover:text-white transition">Tantangan</a>
@@ -692,22 +694,19 @@
         </div>
     </footer>
 
-    <!-- Initialize Lucide Icons & Mobile Menu JS -->
+    <!-- Mobile menu JS (icons are inline SVG, pre-rendered from Lucide 1.71.0) -->
     <script>
-        // Init Lucide icons
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            window.lucide.createIcons();
-        }
 
         // Mobile Menu Toggle logic
         const menuButton = document.getElementById('mobileMenuButton');
         const mobileMenuPanel = document.getElementById('mobileMenuPanel');
 
+        const MENU_ICONS = {
+            menu: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-lucide=\"menu\" aria-hidden=\"true\" class=\"lucide lucide-menu w-5 h-5\"><path d=\"M4 5h16\"></path><path d=\"M4 12h16\"></path><path d=\"M4 19h16\"></path></svg>",
+            x: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" data-lucide=\"x\" aria-hidden=\"true\" class=\"lucide lucide-x w-5 h-5\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg>"
+        };
         function setMenuIcon(name) {
-            menuButton.innerHTML = '<i data-lucide="' + name + '" class="w-5 h-5"></i>';
-            if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                window.lucide.createIcons();
-            }
+            menuButton.innerHTML = MENU_ICONS[name];
         }
 
         function closeMenu() {

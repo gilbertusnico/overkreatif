@@ -1,0 +1,9 @@
+# Netlify response headers (https://docs.netlify.com/routing/headers/).
+# File names are not content-hashed, so keep lifetimes moderate: an image or script replaced
+# under the same name may be served from a visitor's cache until it expires.
+/img/*
+  Cache-Control: public, max-age=604800
+/products/assets/*
+  Cache-Control: public, max-age=604800
+/js/*
+  Cache-Control: public, max-age=86400
