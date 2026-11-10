@@ -155,7 +155,11 @@ function init() {
     return words;
   }
   function playHeading(words, delay = 0, step = 0.035) {
-    words.forEach((w, i) => play(w, "mask", delay + i * step, 0.9));
+    // Once a word has landed, drop its mask's clipping: tall or italic glyphs (e.g. Playfair's
+    // "J" and "l") reach past any line box, and a permanent overflow:hidden would crop them.
+    words.forEach((w, i) =>
+      play(w, "mask", delay + i * step, 0.9).then(() => w.parentElement && (w.parentElement.style.overflow = "visible"))
+    );
     return delay + words.length * step;
   }
 
@@ -440,7 +444,7 @@ function init() {
 
 function injectStyles() {
   const css = `
-    .pm-mask{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .08em .14em;margin:0 -.08em -.14em}
+    .pm-mask{display:inline-block;overflow:hidden;vertical-align:top;padding:.25em .12em .14em;margin:-.25em -.12em -.14em}
     .pm-word{display:inline-block;will-change:transform}
     .pm-rail::before{content:"";position:absolute;left:-2px;top:0;bottom:0;width:2px;pointer-events:none;
       background:var(--pm-rail,currentColor);transform-origin:top center;transform:scaleY(var(--pm-p,0))}
