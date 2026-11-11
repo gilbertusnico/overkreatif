@@ -143,9 +143,11 @@ function init() {
       words.forEach((w) => (w.style.transform = "translateY(110%)"));
       title.setAttribute("data-revealed", "");
       words.forEach((w, i) => {
-        animate(w, { transform: ["translateY(110%)", "translateY(0%)"] }, { duration: 0.9, delay: 0.05 + i * 0.045, ease: EASE }).then(
-          () => w.style.removeProperty("transform")
-        );
+        animate(w, { transform: ["translateY(110%)", "translateY(0%)"] }, { duration: 0.9, delay: 0.05 + i * 0.045, ease: EASE }).then(() => {
+          w.style.removeProperty("transform");
+          // Landed: stop clipping so tall glyphs are never cropped by the mask.
+          if (w.parentElement) w.parentElement.style.overflow = "visible";
+        });
       });
       wordsEnd = 0.05 + words.length * 0.045;
     }
