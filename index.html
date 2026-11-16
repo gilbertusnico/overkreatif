@@ -389,6 +389,53 @@
     @media (min-width: 1280px){
       .services-intro{ position:sticky; top:8rem; align-self:start; }
     }
+
+    /* Client logos as a slow marquee (built by the motion script; plain wrapped row without it).
+       Items use margin-right instead of gap so the duplicated set is exactly half the track. */
+    .logo-marquee{ display:block !important; overflow:hidden;
+      -webkit-mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+              mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+    .logo-marquee__track{ display:flex; align-items:center; width:max-content; will-change:transform; }
+    .logo-marquee__track > *{ flex:none; margin-right:2.5rem; }
+
+    /* "Proses Kami" pinned while the steps light up one by one (desktop, motion allowed).
+       overflow:clip instead of hidden: hidden would make the section a scroll container and break sticky. */
+    @media (min-width: 1024px) and (min-height: 760px){
+      #system.process-pinned{ height:240vh; overflow:clip; padding-top:0; padding-bottom:0; }
+      #system.process-pinned .process-stage{ position:sticky; top:80px; height:calc(100vh - 80px); display:flex; flex-direction:column; justify-content:center; }
+      #system.process-pinned .process-stage > .mb-24{ margin-bottom:4rem; }
+      #system.process-pinned .process-step{ opacity:.35; transition:opacity .5s ease; }
+      #system.process-pinned .process-step.is-active{ opacity:1; }
+    }
+
+    /* Portfolio lightbox + "Lihat" cursor (js/src/lightbox.js) */
+    .card.is-clickable{ cursor:pointer; }
+    .card.is-clickable:focus-visible{ outline:2px solid #003ec7; outline-offset:6px; border-radius:1rem; }
+    .lb{ position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:4.5rem 1rem 1.5rem; }
+    .lb[hidden]{ display:none; }
+    .lb__backdrop{ position:absolute; inset:0; background:rgba(9,11,18,.84); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+    .lb__figure{ position:relative; margin:0; display:flex; flex-direction:column; align-items:center; gap:.9rem; width:min(92vw, 1100px); }
+    .lb__img{ display:block; width:100%; height:auto; max-height:calc(100vh - 11rem); object-fit:contain; border-radius:1rem; box-shadow:0 30px 80px -20px rgba(0,0,0,.6); }
+    .lb__cap{ display:flex; flex-wrap:wrap; gap:.25rem .75rem; align-items:baseline; justify-content:center; color:#fff; text-align:center; }
+    .lb__title{ font-size:1.15rem; font-weight:800; }
+    .lb__kind{ color:rgba(255,255,255,.72); }
+    .lb__count{ color:rgba(255,255,255,.6); font-size:.85rem; }
+    .lb__btn{ position:absolute; z-index:1; display:grid; place-items:center; width:3rem; height:3rem; border-radius:999px; color:#fff; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); cursor:pointer; transition:background-color .2s ease; }
+    .lb__btn:hover{ background:rgba(255,255,255,.22); }
+    .lb__btn:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+    .lb__close{ top:1rem; right:1rem; }
+    .lb__prev, .lb__next{ top:50%; margin-top:-1.5rem; }
+    .lb__prev{ left:1rem; }
+    .lb__next{ right:1rem; }
+    @media (max-width: 640px){
+      .lb{ padding-bottom:5.5rem; }
+      .lb__prev, .lb__next{ top:auto; bottom:1.25rem; margin-top:0; }
+      .lb__prev{ left:calc(50% - 3.5rem); }
+      .lb__next{ right:calc(50% - 3.5rem); }
+    }
+    .lb-cursor{ position:fixed; left:0; top:0; z-index:90; width:84px; height:84px; border-radius:999px; display:grid; place-items:center;
+      background:#0052ff; color:#fff; font-weight:800; font-size:.9rem; pointer-events:none;
+      transform:translate(-200px, -200px) scale(0); box-shadow:0 12px 30px -8px rgba(0,82,255,.55); }
     @media (max-width: 1024px){
       .hero-blob--a{ width:260px; height:260px; }
     }
@@ -427,8 +474,7 @@
             "addressCountry": "ID"
           },
           "sameAs": [
-            "https://www.instagram.com/overkreatif",
-            "https://www.linkedin.com/company/overkreatif"
+            "https://www.instagram.com/overkreatif/"
           ],
           "knowsAbout": [
             "Identitas merek",
@@ -674,8 +720,7 @@
       <symbol id="icon-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5m-18 5 9 5 9-5" /></symbol>
       <symbol id="icon-trending-up" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8m-7 0h7v7" /></symbol>
       <symbol id="icon-message" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" /></symbol>
-      <symbol id="icon-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20Z" /></symbol>
-      <symbol id="icon-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 10.5 6.8-4m-6.8 7 6.8 4" /></symbol>
+      <symbol id="icon-instagram" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M17.5 6.5h.01" /></symbol>
     </svg>
     <div id="section-progress" aria-hidden="true" style="position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,#2563eb,#0047d1);width:0%;z-index:60;transition:width .12s linear"></div>
     <!-- TopNavBar -->
@@ -775,15 +820,15 @@
     <section class="bg-surface-container-low py-16">
       <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop">
         <p class="text-label-caps font-label-caps text-on-surface-variant mb-stack-lg uppercase tracking-widest text-center" data-reveal="fade">Dipercaya bisnis dari berbagai industri</p>
-        <div class="flex flex-wrap justify-center items-center gap-10 opacity-40 imggray" data-reveal-group="0.06">
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/24.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/20.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/21.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/22.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/23.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/25.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/26.webp" width="300" height="210" alt="" /></div>
-          <div data-reveal="up"><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/27.webp" width="300" height="210" alt="" /></div>
+        <div class="flex flex-wrap justify-center items-center gap-10 opacity-40 imggray" data-marquee data-reveal="fade">
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/24.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/20.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/21.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/22.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/23.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/25.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/26.webp" width="300" height="210" alt="" /></div>
+          <div><img class="lazy-img is-loading" loading="lazy" decoding="async" src="img/27.webp" width="300" height="210" alt="" /></div>
         </div>
       </div>
     </section>
@@ -792,7 +837,7 @@
     <section id="produk" class="border-y border-gray-100 bg-gray-50 py-16 font-['Nunito'] md:py-20">
       <div class="mx-auto max-w-6xl px-6">
         <div class="mx-auto mb-10 max-w-2xl text-center md:mb-12" data-reveal="blur">
-          <span class="mb-2 block text-sm font-bold uppercase tracking-wider text-blue-600">Produk Overkreatif</span>
+          <span class="mb-2 block text-sm font-bold uppercase tracking-wider text-blue-600" data-scramble>Produk Overkreatif</span>
           <h2 class="text-3xl font-extrabold leading-tight text-gray-900 md:text-4xl">Aplikasi siap pakai buat <span class="text-blue-600">urusan operasional</span>.</h2>
           <p class="mx-auto mt-4 max-w-xl leading-relaxed text-gray-600">Buat kamu yang mengurus stok barang, tagihan, atau usaha penyewaan.</p>
         </div>
@@ -852,7 +897,7 @@
         
         <!-- Header -->
         <div class="max-w-2xl mb-12" data-reveal="blur">
-          <span class="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block">Tentang Overkreatif</span>
+          <span class="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block" data-scramble>Tentang Overkreatif</span>
           <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight transition-all duration-700 opacity-100 translate-y-0">
             Tim digital yang ngerti bisnis, <span class="text-blue-600">bukan cuma desain.</span>
           </h2>
@@ -922,12 +967,9 @@
     <section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-[1440px] mx-auto" id="work">
       <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
         <div data-reveal="blur">
-          <p class="text-label-caps font-label-caps text-primary-container mb-2">KARYA PILIHAN</p>
+          <p class="text-label-caps font-label-caps text-primary-container mb-2" data-scramble>KARYA PILIHAN</p>
           <h2 class="text-headline-md md:text-5xl font-black">Beberapa proyek yang <span class="text-primary-container">pernah kami kerjakan.</span></h2>
         </div>
-        <a class="text-primary font-bold flex items-center gap-2 group" href="#" style="display:none">
-          Lihat Semua Proyek <svg class="icon text-2xl group-hover:translate-x-1 transition-transform" aria-hidden="true" focusable="false"><use href="#icon-arrow-forward"></use></svg>
-        </a>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md" data-reveal-group="0.14">
         <!-- Project Card 1 -->
@@ -1032,11 +1074,11 @@
     <section class="px-margin-mobile md:px-margin-desktop py-section-gap max-w-[1440px] mx-auto bgservices" id="services">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-12 xl:gap-16">
         <div class="services-intro" data-reveal="left">
-          <p class="text-label-caps font-label-caps text-primary-container mb-2">LAYANAN KAMI</p>
+          <p class="text-label-caps font-label-caps text-primary-container mb-2" data-scramble>LAYANAN KAMI</p>
           <h2 class="text-headline-md font-extrabold mb-6">Apa saja yang bisa <span class="text-primary-container">kami bantu.</span></h2>
           <p class="text-on-surface-variant">Mulai dari logo, website, sampai sistem yang jalan di belakang layar. Pilih yang kamu butuhkan, atau kami bantu tentukan.</p>
         </div>
-        <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-group="0.08">
+        <div class="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-group="0.08" data-reveal-ripple>
           <article data-reveal="up" class="p-8 rounded-3xl bg-surface-container-low hover:bg-surface-container-high transition-colors poin-service">
             <div class="w-12 h-12 bg-primary-container text-white rounded-full flex items-center justify-center mb-6">
               <svg class="icon text-2xl" aria-hidden="true" focusable="false"><use href="#icon-pencil"></use></svg>
@@ -1095,7 +1137,7 @@
     <section class="px-margin-mobile md:px-margin-desktop py-stack-lg max-w-[1440px] mx-auto border-t border-outline-variant/20 pt-24" id="think">
       <div class="mb-20">
         <div data-reveal="blur">
-          <p class="text-label-caps font-label-caps text-primary-container mb-2">CARA KAMI BERPIKIR</p>
+          <p class="text-label-caps font-label-caps text-primary-container mb-2" data-scramble>CARA KAMI BERPIKIR</p>
           <h2 class="text-headline-md md:text-5xl font-black max-w-none">Desain bagus bukan cuma enak dilihat. <br />Tapi juga <span class="text-primary-container">gampang dipakai.</span></h2>
         </div>
       </div>
@@ -1135,7 +1177,7 @@
       <span class="system-glow system-glow--b" data-parallax="-60" aria-hidden="true"></span>
       <div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
         <div class="mb-24 m-24-mobile text-center" data-reveal="blur">
-          <p class="text-label-caps font-label-caps text-primary-fixed mb-4">PROSES KAMI</p>
+          <p class="text-label-caps font-label-caps text-primary-fixed mb-4" data-scramble>PROSES KAMI</p>
           <h2 class="text-headline-md md:text-5xl font-extrabold mb-6">Kerja kami jelas <br class="hide-mobile" />tahapannya.</h2>
           <p class="text-on-tertiary-container text-body-lg max-w-3xl mx-auto mb-8 mb-8-mobile">
             Tanpa tebak-tebakan. Kamu selalu tahu proyeknya lagi di tahap mana dan apa yang dikerjakan selanjutnya.
@@ -1212,7 +1254,7 @@
           <!-- Step 3 -->
           <div class="relative" data-reveal="right">
             <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
-              <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-layers"></use></svg>
+              <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-devices"></use></svg>
             </div>
             <span class="text-label-caps text-primary-fixed-dim block mb-1">03</span>
             <h3 class="font-headline-sm text-headline-sm mb-3">Website &amp; Aplikasi</h3>
@@ -1221,11 +1263,20 @@
           <!-- Step 4 -->
           <div class="relative" data-reveal="right">
             <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
-              <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
+              <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-layers"></use></svg>
             </div>
             <span class="text-label-caps text-primary-fixed-dim block mb-1">04</span>
             <h3 class="font-headline-sm text-headline-sm mb-3">Konten</h3>
             <p class="text-on-tertiary-container/70">Kami bikin konten yang pesannya jelas dan gayanya konsisten.</p>
+          </div>
+          <!-- Step 5 -->
+          <div class="relative" data-reveal="right">
+            <div class="absolute -left-[60px] top-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+              <svg class="icon text-[20px]" aria-hidden="true" focusable="false"><use href="#icon-trending-up"></use></svg>
+            </div>
+            <span class="text-label-caps text-primary-fixed-dim block mb-1">05</span>
+            <h3 class="font-headline-sm text-headline-sm mb-3">Pertumbuhan</h3>
+            <p class="text-on-tertiary-container/70">Setelah rilis, kami tetap mendampingi: pantau hasilnya dan perbaiki yang perlu.</p>
           </div>
         </div>
 
@@ -1238,7 +1289,7 @@
         
         <!-- Title Section -->
         <div class="text-center max-w-2xl mx-auto mb-16" data-reveal="blur">
-          <span class="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block">FAQ</span>
+          <span class="text-blue-600 font-bold tracking-wider text-sm uppercase mb-2 block" data-scramble>FAQ</span>
           <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">
             Yang sering ditanyakan
           </h2>
@@ -1362,10 +1413,10 @@
             <ul class="space-y-4">
               <li class="text-secondary"><a href="mailto:overkreatif@gmail.com">overkreatif@gmail.com</a></li>
               <li class="text-secondary">Jakarta, Indonesia</li>
-              <li class="flex items-center gap-4 pt-4" style="display:none">
-                <a class="text-secondary hover:text-primary transition-colors" href="#"><svg class="icon text-xl" aria-hidden="true" focusable="false"><use href="#icon-globe"></use></svg></a>
-                <a class="text-secondary hover:text-primary transition-colors" href="#"><svg class="icon text-xl" aria-hidden="true" focusable="false"><use href="#icon-share"></use></svg></a>
-                <a class="text-secondary hover:text-primary transition-colors" href="#"><svg class="icon text-xl" aria-hidden="true" focusable="false"><use href="#icon-camera"></use></svg></a>
+              <li>
+                <a class="text-secondary hover:text-primary transition-colors inline-flex items-center gap-2" href="https://www.instagram.com/overkreatif/" target="_blank" rel="noopener" aria-label="Instagram Overkreatif (@overkreatif)">
+                  <svg class="icon text-xl" aria-hidden="true" focusable="false"><use href="#icon-instagram"></use></svg>@overkreatif
+                </a>
               </li>
             </ul>
           </div>

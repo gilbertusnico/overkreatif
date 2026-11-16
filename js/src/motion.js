@@ -14,6 +14,8 @@
  * file fails to load), so content is never stuck invisible.
  */
 import { animate as motionAnimate, scroll, inView, hover } from "motion";
+import { primeDraw, playDraw, rippleFactors, scramble } from "./fx.js";
+import { initLightbox } from "./lightbox.js";
 
 /* Motion commits an animation's final values as inline styles one frame after its
    promise resolves, which would re-add anything a .then() callback just cleared and
@@ -32,6 +34,11 @@ window.__motionBooted = true;
 
 // Head fallback already gave up (slow network) or user prefers reduced motion: do nothing.
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// The portfolio lightbox is a feature, not decoration: it runs for everyone
+// (without transitions when motion is reduced).
+initLightbox({ animate, reduce: reduceMotion || !root.classList.contains("motion-ready") });
+
 if (reduceMotion || !root.classList.contains("motion-ready")) {
   root.classList.remove("motion-ready");
 } else {
@@ -43,6 +50,51 @@ function init() {
   const SPRING = { type: "spring", stiffness: 380, damping: 22 };
   const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
   const canHover = window.matchMedia("(hover: hover)").matches;
+
+  /* ------------------------------------------------------------------ */
+  /* Client logos: one slow marquee row that eases off on hover          */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll("[data-marquee]").forEach((row) => {
+    const items = Array.from(row.children);
+    const track = document.createElement("div");
+    track.className = "logo-marquee__track";
+    items.forEach((el) => track.appendChild(el));
+    items.forEach((el) => {
+      const copy = el.cloneNode(true);
+      copy.setAttribute("aria-hidden", "true");
+      track.appendChild(copy);
+    });
+    row.appendChild(track);
+    row.classList.add("logo-marquee");
+    const loop = animate(track, { transform: ["translateX(0%)", "translateX(-50%)"] }, { duration: 45, repeat: Infinity, ease: "linear" });
+    if (canHover) {
+      row.addEventListener("pointerenter", () => (loop.speed = 0.25));
+      row.addEventListener("pointerleave", () => (loop.speed = 1));
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* "Proses Kami": pin the section and light the steps up in turn      */
+  /* (desktop + tall enough screen; same media query as the CSS)        */
+  /* ------------------------------------------------------------------ */
+  const system = document.getElementById("system");
+  const pinProcess = system && window.matchMedia("(min-width: 1024px) and (min-height: 760px)").matches;
+  let processSteps = [];
+  if (pinProcess) {
+    system.classList.add("process-pinned");
+    const stage = system.querySelector(":scope > .relative.z-10");
+    if (stage) stage.classList.add("process-stage");
+    const grid = system.querySelector(".show-desktop-ipadpro .grid");
+    if (grid) {
+      // the steps are revealed by the scroll position instead of the generic stagger
+      grid.removeAttribute("data-reveal-group");
+      processSteps = Array.from(grid.children);
+      processSteps.forEach((s) => {
+        s.removeAttribute("data-reveal");
+        s.classList.add("process-step");
+      });
+    }
+  }
 
   /* ------------------------------------------------------------------ */
   /* Reveal variants                                                     */
@@ -107,10 +159,13 @@ function init() {
     items.forEach((i) => grouped.add(i));
     const step = parseFloat(group.getAttribute("data-reveal-group")) || 0.09;
     const base = parseFloat(group.getAttribute("data-reveal-delay")) || 0;
+    const ripple = group.hasAttribute("data-reveal-ripple");
     const stop = inView(
       group,
       () => {
-        items.forEach((item, i) => reveal(item, base + i * step));
+        // ripple: items closest to the grid's centre first, spreading outwards
+        const f = ripple ? rippleFactors(items) : null;
+        items.forEach((item, i) => reveal(item, base + (f ? f[i] * step * items.length * 0.6 : i * step)));
         stop();
       },
       { amount: 0.12, margin: "0px 0px -8% 0px" }
@@ -161,13 +216,24 @@ function init() {
       );
     }
 
-    // Ambient blobs drift slowly forever (compositor-only transforms).
+    // Ambient blobs drift and slowly change shape forever. Uneven scale + rotation reads as a
+    // morph on these soft, blurred circles while staying compositor-only (no repaint of the blur).
+    const BLOB_PATHS = [
+      [
+        "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+        "translate(46px, -28px) rotate(28deg) scale(1.18, 0.86)",
+        "translate(-14px, 22px) rotate(-18deg) scale(0.9, 1.14)",
+        "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+      ],
+      [
+        "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+        "translate(-38px, 26px) rotate(-24deg) scale(0.88, 1.16)",
+        "translate(18px, -16px) rotate(16deg) scale(1.14, 0.9)",
+        "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+      ],
+    ];
     hero.querySelectorAll(".hero-blob").forEach((blob, i) => {
-      animate(
-        blob,
-        { transform: ["translate(0px, 0px) scale(1)", i ? "translate(-40px, 30px) scale(1.1)" : "translate(50px, -30px) scale(1.08)"] },
-        { duration: 9 + i * 3, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }
-      );
+      animate(blob, { transform: BLOB_PATHS[i % 2] }, { duration: 16 + i * 4, repeat: Infinity, ease: "easeInOut" });
     });
 
     // Scroll-out parallax: copy rises a touch faster than the visual, then fades.
@@ -196,17 +262,31 @@ function init() {
   /* Process section: line drawing + floating step icons                 */
   /* ------------------------------------------------------------------ */
   document.querySelectorAll("[data-draw-x]").forEach((line) => {
-    const range = { target: line.parentElement, offset: ["start 85%", "end 55%"] };
-    scroll(animate(line, { transform: ["scaleX(0)", "scaleX(1)"] }, { ease: "linear" }), range);
+    // Pinned: the whole (tall) section is the scroll range and the line is full at 80%, so the
+    // last step gets a moment on screen before the section scrolls away.
+    const FULL_AT = 0.8;
+    const range = pinProcess
+      ? { target: system, offset: ["start start", "end end"] }
+      : { target: line.parentElement, offset: ["start 85%", "end 55%"] };
+    scroll(
+      animate(line, { transform: pinProcess ? ["scaleX(0)", "scaleX(1)", "scaleX(1)"] : ["scaleX(0)", "scaleX(1)"] },
+        pinProcess ? { ease: "linear", times: [0, FULL_AT, 1] } : { ease: "linear" }),
+      range
+    );
 
     // Light up each step box once the line reaches it (boxes sit at 0, 1/4 … 1 of the line).
     const boxes = Array.from(line.parentElement.querySelectorAll(".process-step-box"));
     if (boxes.length > 1) {
       const last = boxes.length - 1;
       scroll((progress) => {
+        const p = pinProcess ? Math.min(1, progress / FULL_AT) : progress;
         // Light up as the line touches the box edge (half a box before its centre).
         const edge = boxes[0].offsetWidth / 2 / (line.offsetWidth || 1);
-        boxes.forEach((box, i) => box.classList.toggle("is-active", progress >= i / last - edge));
+        boxes.forEach((box, i) => {
+          const on = p >= i / last - edge;
+          box.classList.toggle("is-active", on);
+          if (processSteps[i]) processSteps[i].classList.toggle("is-active", on);
+        });
       }, range);
     }
   });
@@ -224,6 +304,37 @@ function init() {
       repeatType: "mirror",
       ease: "easeInOut",
     });
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Icons draw their strokes when they come into view                   */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll(".poin-service svg.icon, #about svg.icon, #system svg.icon").forEach((svg) => {
+    // icons in the layout that is hidden at this width (desktop vs mobile timeline) stay as they are
+    if (!svg.getClientRects().length) return;
+    primeDraw(svg);
+    const stop = inView(
+      svg,
+      () => {
+        playDraw(svg, 0.3, 1.1);
+        stop();
+      },
+      { amount: 0.5 }
+    );
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Eyebrow labels decode from random letters                          */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll("[data-scramble]").forEach((el) => {
+    const stop = inView(
+      el,
+      () => {
+        scramble(el, { delay: 0.15, duration: 0.9 });
+        stop();
+      },
+      { amount: 0.6 }
+    );
   });
 
   // "How we think" bullets: soft breathing dot.

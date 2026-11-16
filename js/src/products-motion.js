@@ -14,6 +14,7 @@
  * has primed its first frame, so nothing flashes.
  */
 import { animate as motionAnimate, scroll, inView, hover } from "motion";
+import { primeDraw, playDraw, rippleFactors, scramble } from "./fx.js";
 
 /* Motion commits an animation's final values as inline styles one frame after its
    promise resolves, which would re-add anything a .then() callback just cleared and
@@ -355,11 +356,19 @@ function init() {
     kids.forEach((k) => prime(k, isCards ? "scale" : "up"));
     const badges = kids.map((k) => k.querySelector(".step-number"));
     badges.forEach((b) => b && prime(b, "pop"));
+    // Card icons draw their strokes once the card has landed.
+    const icons = kids.map((k) => k.querySelector(".w-12.h-12 svg"));
+    icons.forEach((svg) => svg && primeDraw(svg));
+    // Card grids ripple out from their centre; numbered steps keep their 1-2-3 order.
+    const ripple = isCards && kids.length >= 3 && !kids.some((k) => /step-card/.test(k.className));
 
     once(g, () => {
+      const f = ripple ? rippleFactors(kids) : null;
       kids.forEach((k, i) => {
-        play(k, isCards ? "scale" : "up", i * 0.09, 0.85);
-        if (badges[i]) play(badges[i], "pop", 0.25 + i * 0.09, 0.9, [0.34, 1.56, 0.64, 1]);
+        const d = f ? f[i] * 0.09 * kids.length * 0.6 : i * 0.09;
+        play(k, isCards ? "scale" : "up", d, 0.85);
+        if (badges[i]) play(badges[i], "pop", 0.25 + d, 0.9, [0.34, 1.56, 0.64, 1]);
+        if (icons[i]) playDraw(icons[i], 0.3 + d, 1.1);
       });
     });
 
@@ -390,6 +399,23 @@ function init() {
       after.forEach((el, i) => play(el, "up", Math.min(end, 0.45) + i * 0.1, 0.8));
     }, 0.4);
   });
+
+  /* ------------------------------------------------------------------ */
+  /* 7b. Eyebrow labels ("01 / TANTANGAN", badges) decode from noise     */
+  /* ------------------------------------------------------------------ */
+  const eyebrows = Array.from(document.querySelectorAll('[class*="tracking-[0.14em]"], .eyebrow-label'));
+  eyebrows
+    .filter((el) => !eyebrows.some((other) => other !== el && other.contains(el)))
+    .forEach((el) => {
+      const stop = inView(
+        el,
+        () => {
+          scramble(el, { delay: 0.2, duration: 0.9 });
+          stop();
+        },
+        { amount: 0.6 }
+      );
+    });
 
   /* ------------------------------------------------------------------ */
   /* 8. Micro-interactions (mouse only)                                  */
