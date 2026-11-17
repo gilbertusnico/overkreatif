@@ -303,6 +303,19 @@ function init() {
     }
   });
   document.querySelectorAll("[data-draw-y]").forEach((line) => {
+    // Span the fill from the first dot's centre to the last dot's centre, like the rail itself.
+    const dots = Array.from(line.parentElement.querySelectorAll(":scope > .relative > .absolute.rounded-full"));
+    if (dots.length > 1) {
+      const centre = (d) => d.offsetParent.offsetTop + d.offsetTop + d.offsetHeight / 2;
+      const place = () => {
+        const top = centre(dots[0]);
+        line.style.top = top + "px";
+        line.style.bottom = "auto";
+        line.style.height = Math.max(0, centre(dots[dots.length - 1]) - top) + "px";
+      };
+      place();
+      window.addEventListener("resize", place);
+    }
     scroll(animate(line, { transform: ["scaleY(0)", "scaleY(1)"] }, { ease: "linear" }), {
       target: line.parentElement,
       offset: ["start 75%", "end 60%"],
