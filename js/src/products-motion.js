@@ -580,7 +580,8 @@ function init() {
   });
 
   function odometer(el, text, delay) {
-    const h = el.getBoundingClientRect().height;
+    // layout height, not getBoundingClientRect: the card may still be mid scale-in when this runs
+    const h = el.offsetHeight;
     // the real text stays in place (invisible) so nothing moves; the rolling digits sit on top
     const ghost = document.createElement("span");
     ghost.style.visibility = "hidden";
@@ -588,6 +589,8 @@ function init() {
     const over = document.createElement("span");
     over.className = "pm-odo";
     over.setAttribute("aria-hidden", "true");
+    // clip window = exactly one digit tall, otherwise the whole 0–9 strip shows stacked
+    over.style.height = `${h}px`;
     const cols = Array.from(text).map((ch, k) => {
       const col = document.createElement("span");
       col.className = "pm-odo__col";
