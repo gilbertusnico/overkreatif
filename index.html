@@ -382,6 +382,12 @@
     .process-step-box > span{ transition:color .5s ease; }
     .process-step-box.is-active{ border-color:rgb(96 165 250 / .9); box-shadow:0 0 0 4px rgb(37 99 235 / .15), 0 0 28px -4px rgb(37 99 235 / .55); }
     .process-step-box.is-active > span{ color:#fff; }
+    /* Mobile process timeline: dots centred on the rail, and the rail only runs from the first dot
+       to the last one (a segment per step down to the next dot; steps are 4rem apart, dots 40px). */
+    #system .show-tablet-mobile{ border-left-color:transparent; }
+    #system .show-tablet-mobile > .relative > .absolute.rounded-full{ left:-68px; }
+    #system .show-tablet-mobile > .relative:not(:last-child)::before{ content:""; position:absolute; left:-49px; width:1px;
+      top:20px; bottom:calc(-4rem - 20px); background:rgb(115 118 135 / .3); pointer-events:none; }
     .timeline-progress{ position:absolute; left:-1px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,#60a5fa,#2563eb); transform-origin:top center; border-radius:2px; }
     html:not(.motion-ready) .process-line{ display:none; }
     html:not(.motion-ready) .timeline-progress{ display:none; }
@@ -683,7 +689,7 @@
       <symbol id="icon-brain" viewBox="0 0 24 24"><path d="M12 18V5a3 3 0 0 0-5.8-1A4 4 0 0 0 4 11a4 4 0 0 0 2 7.5A3.5 3.5 0 0 0 12 18Zm0-9a3 3 0 0 1 5.8-1A4 4 0 0 1 20 14a4 4 0 0 1-2 7.5A3.5 3.5 0 0 1 12 18" /></symbol>
       <symbol id="icon-badge-check" viewBox="0 0 24 24"><path d="m12 3 2.1 1.5 2.6-.1 1.2 2.3 2.3 1.2-.1 2.6L22 12l-1.5 2.1.1 2.6-2.3 1.2-1.2 2.3-2.6-.1L12 22l-2.1-1.5-2.6.1-1.2-2.3-2.3-1.2.1-2.6L2 12l1.5-2.1-.1-2.6 2.3-1.2 1.2-2.3 2.6.1L12 3Z" /><path d="m9 12 2 2 4-4" /></symbol>
       <symbol id="icon-widgets" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5" /><rect x="13" y="3" width="8" height="5" rx="1.5" /><rect x="13" y="10" width="8" height="11" rx="1.5" /><rect x="3" y="13" width="8" height="8" rx="1.5" /></symbol>
-      <symbol id="icon-pencil" viewBox="0 0 24 24"><path d="m16 4 4 4M4 20l4-.8L19 8a2.8 2.8 0 0 0-4-4L4.8 15 4 20Z" /></symbol>
+      <symbol id="icon-pencil" viewBox="0 0 24 24"><path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.36a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z" /><path d="m15 5 4 4" /></symbol>
       <symbol id="icon-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14" /></symbol>
       <symbol id="icon-smartphone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M11 18h2" /></symbol>
       <symbol id="icon-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 13v-2Zm0 2 2 7h5l-3-6m11-6v10" /></symbol>
