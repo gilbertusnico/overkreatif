@@ -37,7 +37,19 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 
 // The portfolio lightbox is a feature, not decoration: it runs for everyone
 // (without transitions when motion is reduced).
-initLightbox({ animate, reduce: reduceMotion || !root.classList.contains("motion-ready") });
+initLightbox({
+  animate,
+  reduce: reduceMotion || !root.classList.contains("motion-ready"),
+  label: "Pratinjau proyek",
+  openLabel: "Lihat proyek",
+  cursor: "Lihat",
+  items: Array.from(document.querySelectorAll("#work .card")).map((card) => ({
+    trigger: card,
+    img: card.querySelector("img"),
+    title: (card.querySelector("h3") || {}).textContent,
+    kind: (card.querySelector("h3 + p") || {}).textContent,
+  })),
+});
 
 if (reduceMotion || !root.classList.contains("motion-ready")) {
   root.classList.remove("motion-ready");

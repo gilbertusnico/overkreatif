@@ -408,34 +408,9 @@
       #system.process-pinned .process-step.is-active{ opacity:1; }
     }
 
-    /* Portfolio lightbox + "Lihat" cursor (js/src/lightbox.js) */
-    .card.is-clickable{ cursor:pointer; }
-    .card.is-clickable:focus-visible{ outline:2px solid #003ec7; outline-offset:6px; border-radius:1rem; }
-    .lb{ position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:4.5rem 1rem 1.5rem; }
-    .lb[hidden]{ display:none; }
-    .lb__backdrop{ position:absolute; inset:0; background:rgba(9,11,18,.84); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
-    .lb__figure{ position:relative; margin:0; display:flex; flex-direction:column; align-items:center; gap:.9rem; width:min(92vw, 1100px); }
-    .lb__img{ display:block; width:100%; height:auto; max-height:calc(100vh - 11rem); object-fit:contain; border-radius:1rem; box-shadow:0 30px 80px -20px rgba(0,0,0,.6); }
-    .lb__cap{ display:flex; flex-wrap:wrap; gap:.25rem .75rem; align-items:baseline; justify-content:center; color:#fff; text-align:center; }
-    .lb__title{ font-size:1.15rem; font-weight:800; }
-    .lb__kind{ color:rgba(255,255,255,.72); }
-    .lb__count{ color:rgba(255,255,255,.6); font-size:.85rem; }
-    .lb__btn{ position:absolute; z-index:1; display:grid; place-items:center; width:3rem; height:3rem; border-radius:999px; color:#fff; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); cursor:pointer; transition:background-color .2s ease; }
-    .lb__btn:hover{ background:rgba(255,255,255,.22); }
-    .lb__btn:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
-    .lb__close{ top:1rem; right:1rem; }
-    .lb__prev, .lb__next{ top:50%; margin-top:-1.5rem; }
-    .lb__prev{ left:1rem; }
-    .lb__next{ right:1rem; }
-    @media (max-width: 640px){
-      .lb{ padding-bottom:5.5rem; }
-      .lb__prev, .lb__next{ top:auto; bottom:1.25rem; margin-top:0; }
-      .lb__prev{ left:calc(50% - 3.5rem); }
-      .lb__next{ right:calc(50% - 3.5rem); }
-    }
-    .lb-cursor{ position:fixed; left:0; top:0; z-index:90; width:84px; height:84px; border-radius:999px; display:grid; place-items:center;
-      background:#0052ff; color:#fff; font-weight:800; font-size:.9rem; pointer-events:none;
-      transform:translate(-200px, -200px) scale(0); box-shadow:0 12px 30px -8px rgba(0,82,255,.55); }
+    /* Smooth cross-fade when moving between the homepage and the product pages (browsers without
+       cross-document view transitions just navigate as usual). */
+    @media (prefers-reduced-motion: no-preference){ @view-transition { navigation: auto; } }
     @media (max-width: 1024px){
       .hero-blob--a{ width:260px; height:260px; }
     }
@@ -1304,7 +1279,7 @@
           <!-- Item 1 -->
           <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
-              <span>Apa itu Overkreatif?</span>
+              <h3>Apa itu Overkreatif?</h3>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
             </summary>
             <p class="mt-4 text-gray-600 leading-relaxed text-base border-t border-gray-200/60 pt-4">
@@ -1315,7 +1290,7 @@
           <!-- Item 2 -->
           <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
-              <span>Layanan apa saja yang ada di Overkreatif?</span>
+              <h3>Layanan apa saja yang ada di Overkreatif?</h3>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
             </summary>
             <div class="mt-4 text-gray-600 leading-relaxed text-base border-t border-gray-200/60 pt-4">
@@ -1335,7 +1310,7 @@
           <!-- Item 3 -->
           <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
-              <span>Kenapa bisnis perlu AI dan audit keamanan?</span>
+              <h3>Kenapa bisnis perlu AI dan audit keamanan?</h3>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
             </summary>
             <p class="mt-4 text-gray-600 leading-relaxed text-base border-t border-gray-200/60 pt-4">
@@ -1346,7 +1321,7 @@
           <!-- Item 4 -->
           <details data-reveal="up" class="group bg-gray-50 p-6 rounded-2xl border border-gray-100 [&_summary::-webkit-details-marker]:hidden transition-all duration-200">
             <summary class="flex items-center justify-between font-bold text-gray-900 text-lg cursor-pointer">
-              <span>Bagaimana cara mulai konsultasi?</span>
+              <h3>Bagaimana cara mulai konsultasi?</h3>
               <svg class="icon text-2xl text-gray-500 group-open:rotate-180 transition-transform duration-200" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
             </summary>
             <p class="mt-4 text-gray-600 leading-relaxed text-base border-t border-gray-200/60 pt-4">
@@ -1545,7 +1520,7 @@
       });
 
       // Add small aria improvements for accessibility (optional)
-      document.querySelectorAll('details summary').forEach(s=>{ s.setAttribute('role','button'); s.setAttribute('aria-expanded', s.parentElement.open ? 'true' : 'false'); s.addEventListener('click', ()=>{ const p = s.parentElement; setTimeout(()=> s.setAttribute('aria-expanded', p.open ? 'true' : 'false'), 0); }); });
+      document.querySelectorAll('details summary').forEach(s=>{ s.setAttribute('aria-expanded', s.parentElement.open ? 'true' : 'false'); s.addEventListener('click', ()=>{ const p = s.parentElement; setTimeout(()=> s.setAttribute('aria-expanded', p.open ? 'true' : 'false'), 0); }); });
 
       // Micro-interactions: add class to CTAs
       document.querySelectorAll('a, button').forEach(el=>{ if(el.classList.contains('bg-primary') || el.classList.contains('bg-primary-container') || el.classList.contains('bg-white')) el.classList.add('btn-ux'); });

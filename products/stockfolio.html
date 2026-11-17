@@ -111,6 +111,57 @@
       ]
     }
     </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://overkreatif.netlify.app/products/stockfolio.html#faq",
+  "url": "https://overkreatif.netlify.app/products/stockfolio.html#faq",
+  "inLanguage": "id",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Apa itu StockFolio?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "StockFolio adalah sistem inventaris berbasis web untuk mengelola produk, stok, gudang, keluar-masuk barang, stok opname, dan laporan dari satu tempat."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Fitur apa saja yang ada di StockFolio?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ada enam bagian utama: data utama (produk, kategori, pemasok, dan gudang), pencatatan pergerakan stok (barang masuk, barang keluar, penyesuaian, dan transfer), stok opname, dasbor, laporan, serta ekspor data."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah StockFolio bisa dipakai untuk lebih dari satu gudang?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bisa. Stok dicatat per gudang, barang bisa ditransfer antar gudang, dan laporan stok bisa dilihat per produk maupun per gudang."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bagaimana StockFolio membantu stok opname?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "StockFolio membandingkan stok di sistem dengan jumlah fisik hasil hitung, lalu menampilkan selisihnya, jadi kamu langsung tahu barang mana yang perlu dicek."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "StockFolio cocok untuk bisnis apa?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "StockFolio cocok untuk ritel, distributor, pergudangan, dan bisnis berkembang yang ingin merapikan stok tanpa harus langsung memakai sistem ERP yang rumit."
+      }
+    }
+  ]
+}
+    </script>
     <style>
     @font-face {
       font-family: 'CameraPlainVariable';
@@ -284,7 +335,8 @@
 
       <!-- Motion bootstrap: hide the hero until ../js/products-motion.min.js has primed it
          (never under reduced motion; un-hidden after 3s if the bundle doesn't boot). -->
-    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}</style>
+    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}
+    @media (prefers-reduced-motion: no-preference){ @view-transition { navigation: auto; } }</style>
     <script>
       (function(){
         var d = document.documentElement;
@@ -556,9 +608,37 @@
             </div>
           </div>
         </section>
+        <section id="faq" class="border-b border-border py-16 sm:py-24 lg:py-32">
+          <div class="mx-auto w-[min(1240px,100%-2rem)]">
+            <div class="inline-flex items-center gap-2 text-[13px] font-black tracking-[0.14em] text-brand"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand"></span>07 / FAQ</div>
+            <h2 class="display-lg mt-6">Yang sering ditanyakan.</h2>
+            <div class="mt-12 divide-y divide-border border-t border-border">
+              <div class="py-8">
+                <h3 class="text-2xl">Apa itu StockFolio?</h3>
+                <p class="mt-2 max-w-[70ch] leading-relaxed text-muted-foreground">StockFolio adalah sistem inventaris berbasis web untuk mengelola produk, stok, gudang, keluar-masuk barang, stok opname, dan laporan dari satu tempat.</p>
+              </div>
+              <div class="py-8">
+                <h3 class="text-2xl">Fitur apa saja yang ada di StockFolio?</h3>
+                <p class="mt-2 max-w-[70ch] leading-relaxed text-muted-foreground">Ada enam bagian utama: data utama (produk, kategori, pemasok, dan gudang), pencatatan pergerakan stok (barang masuk, barang keluar, penyesuaian, dan transfer), stok opname, dasbor, laporan, serta ekspor data.</p>
+              </div>
+              <div class="py-8">
+                <h3 class="text-2xl">Apakah StockFolio bisa dipakai untuk lebih dari satu gudang?</h3>
+                <p class="mt-2 max-w-[70ch] leading-relaxed text-muted-foreground">Bisa. Stok dicatat per gudang, barang bisa ditransfer antar gudang, dan laporan stok bisa dilihat per produk maupun per gudang.</p>
+              </div>
+              <div class="py-8">
+                <h3 class="text-2xl">Bagaimana StockFolio membantu stok opname?</h3>
+                <p class="mt-2 max-w-[70ch] leading-relaxed text-muted-foreground">StockFolio membandingkan stok di sistem dengan jumlah fisik hasil hitung, lalu menampilkan selisihnya, jadi kamu langsung tahu barang mana yang perlu dicek.</p>
+              </div>
+              <div class="py-8">
+                <h3 class="text-2xl">StockFolio cocok untuk bisnis apa?</h3>
+                <p class="mt-2 max-w-[70ch] leading-relaxed text-muted-foreground">StockFolio cocok untuk ritel, distributor, pergudangan, dan bisnis berkembang yang ingin merapikan stok tanpa harus langsung memakai sistem ERP yang rumit.</p>
+              </div>
+            </div>
+          </div>
+        </section>
         <section id="demo" class="bg-brand py-20 text-primary-foreground sm:py-28 lg:py-36">
           <div class="mx-auto w-[min(1000px,100%-2rem)] text-center">
-            <div class="text-[13px] font-black tracking-[0.14em] text-white/70">07 / PRODUK OVERKREATIF</div>
+            <div class="text-[13px] font-black tracking-[0.14em] text-white/70">08 / PRODUK OVERKREATIF</div>
             <h2 class="display-lg mt-6">Saatnya beralih dari spreadsheet.</h2>
             <p class="mx-auto mt-6 max-w-[60ch] text-lg leading-relaxed text-white/80">Yuk, rapikan stok bisnis kamu dengan sistem yang sederhana dan sesuai cara kerja tim kamu.</p><a href="mailto:overkreatif@gmail.com" class="mt-9 inline-block rounded-lg bg-card px-7 py-4 text-[15px] font-black text-ink transition-transform hover:-translate-y-0.5">Request Demo</a>
           </div>
