@@ -230,7 +230,8 @@
     </style>
     <!-- Motion bootstrap: hide the hero until ../js/products-motion.min.js has primed it
          (never under reduced motion; un-hidden after 3s if the bundle doesn't boot). -->
-    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}</style>
+    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}
+    @media (prefers-reduced-motion: no-preference){ @view-transition { navigation: auto; } }</style>
     <script>
       (function(){
         var d = document.documentElement;

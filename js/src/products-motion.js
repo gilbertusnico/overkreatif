@@ -14,6 +14,8 @@
  * has primed its first frame, so nothing flashes.
  */
 import { animate as motionAnimate, scroll, inView, hover } from "motion";
+import { primeDraw, playDraw, rippleFactors, scramble } from "./fx.js";
+import { initLightbox } from "./lightbox.js";
 
 /* Motion commits an animation's final values as inline styles one frame after its
    promise resolves, which would re-add anything a .then() callback just cleared and
@@ -31,11 +33,50 @@ const root = document.documentElement;
 window.__pmBooted = true;
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-if (reduceMotion || !root.classList.contains("pm-ready")) {
-  root.classList.remove("pm-ready");
-} else {
-  init();
-}
+const motionOK = !reduceMotion && root.classList.contains("pm-ready");
+if (motionOK) init();
+else root.classList.remove("pm-ready");
+
+// Screenshots open in a lightbox at their largest size. A feature, not decoration: runs for
+// everyone (without transitions when motion is reduced). After init(), so it sees the final DOM.
+(function screenshotLightbox() {
+  const shots = Array.from(document.querySelectorAll("section img[srcset]")).filter((img) => /\d+w/.test(img.getAttribute("srcset")));
+  const largest = (img) =>
+    img
+      .getAttribute("srcset")
+      .split(",")
+      .map((c) => c.trim().split(/\s+/))
+      .sort((a, b) => parseInt(b[1], 10) - parseInt(a[1], 10))[0][0];
+  initLightbox({
+    animate,
+    reduce: !motionOK,
+    zoom: true,
+    width: "1500px",
+    label: "Pratinjau tampilan produk",
+    openLabel: "Perbesar gambar",
+    items: shots.map((img) => {
+      let trigger = img.closest('[class*="rounded-2xl"]') || img.parentElement;
+      // role="button" isn't allowed on sectioning elements (BillFolio's preview <article>s):
+      // wrap just the image in a plain block and make that the button instead.
+      if (/^(ARTICLE|SECTION|ASIDE|NAV|MAIN|HEADER|FOOTER)$/.test(trigger.tagName)) {
+        const wrap = document.createElement("div");
+        img.replaceWith(wrap);
+        wrap.appendChild(img);
+        wrap.dataset.pmTitle = (trigger.querySelector("h3") || {}).textContent || "";
+        trigger = wrap;
+      }
+      return {
+        trigger,
+        img,
+        src: () => largest(img),
+        title: () => {
+          const h = trigger.dataset.pmTitle || (trigger.querySelector("h3") || (trigger.parentElement && trigger.parentElement.querySelector(":scope > div > h3")) || {}).textContent;
+          return h || img.alt;
+        },
+      };
+    }),
+  });
+})();
 
 function init() {
   const EASE = [0.22, 1, 0.36, 1];
@@ -179,6 +220,7 @@ function init() {
       if (/^H1$/.test(item.tagName)) {
         const words = primeHeading(item);
         t = playHeading(words, t, 0.045) + 0.05;
+        sheen(Array.from(item.querySelectorAll(".italic .pm-word")), t + 0.9);
         return;
       }
       // Stats bar: stagger its cells instead of moving the whole bar.
@@ -216,7 +258,19 @@ function init() {
         ).then(() => ["opacity", "transform", "transform-origin"].forEach((p) => frame.style.removeProperty(p)));
       }
       rest.forEach((el) => reveal(el, "up", 0.2));
+
+      // The whole visual starts slightly tipped back and straightens as it scrolls up the screen.
+      visual.style.transformOrigin = "50% 0%";
+      scroll(
+        animate(visual, { transform: ["perspective(1600px) rotateX(9deg) scale(0.94)", "perspective(1600px) rotateX(0deg) scale(1)"] }, { ease: "linear" }),
+        { target: visual, offset: ["start end", "start 35%"] }
+      );
     }
+
+    // Badge sparkle twinkles.
+    hero.querySelectorAll('svg[data-lucide="sparkles"]').forEach((svg) => {
+      animate(svg, { transform: ["scale(1) rotate(0deg)", "scale(1.25) rotate(18deg)"], opacity: [1, 0.6] }, { duration: 1.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" });
+    });
 
     hero.setAttribute("data-pm-ready", "");
   }
@@ -243,6 +297,73 @@ function init() {
       if (!raf) raf = requestAnimationFrame(tick);
     });
   }
+
+  /* ------------------------------------------------------------------ */
+  /* 2b. Showcase, pinned (desktop): the screenshot stays put while the  */
+  /*     copy scrolls past and the image swaps to match                  */
+  /* ------------------------------------------------------------------ */
+  (function stickyShowcase() {
+    if (!window.matchMedia("(min-width: 1024px) and (min-height: 700px)").matches) return;
+    const rows = Array.from(document.querySelectorAll("section .grid.items-center")).filter((r) => !(hero && hero.contains(r)) && r.querySelector("img"));
+    if (rows.length < 2 || !rows.every((r) => r.parentElement === rows[0].parentElement)) return;
+    const list = rows[0].parentElement;
+    const col = document.createElement("div");
+    col.className = "pm-sticky__col";
+    const stage = document.createElement("div");
+    stage.className = "pm-sticky__stage";
+    const copies = [];
+    const frames = [];
+    rows.forEach((row, i) => {
+      const kids = Array.from(row.children);
+      const frame = kids.find((k) => k.querySelector("img"));
+      const copy = kids.find((k) => k !== frame);
+      // inline order keeps copy/frame pairs together if the window is later narrowed (see CSS fallback)
+      copy.style.order = String(i * 2);
+      frame.style.order = String(i * 2 + 1);
+      copy.classList.add("pm-sticky__copy");
+      frame.classList.add("pm-sticky__frame");
+      frame.dataset.pmTitle = (copy.querySelector("h3") || {}).textContent || "";
+      col.appendChild(copy);
+      stage.appendChild(frame);
+      copies.push(copy);
+      frames.push(frame);
+      row.remove();
+    });
+    list.classList.add("pm-sticky");
+    list.append(col, stage);
+    handled.add(list);
+
+    const centre = () => stage.style.setProperty("--pm-stage-top", Math.max(96, (window.innerHeight - stage.offsetHeight) / 2) + "px");
+    centre();
+    window.addEventListener("resize", centre);
+    stage.querySelectorAll("img").forEach((img) => img.addEventListener("load", centre));
+
+    let active = -1;
+    const setActive = (i) => {
+      if (i === active) return;
+      active = i;
+      copies.forEach((c, j) => c.classList.toggle("is-active", j === i));
+      frames.forEach((f, j) => f.classList.toggle("is-active", j === i));
+    };
+    setActive(0);
+    scroll(() => {
+      const mid = window.innerHeight / 2;
+      let best = 0;
+      let dist = Infinity;
+      copies.forEach((c, j) => {
+        const r = c.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - mid);
+        if (d < dist) {
+          dist = d;
+          best = j;
+        }
+      });
+      setActive(best);
+    });
+
+    reveal(stage, "scale");
+    copies.forEach((c) => reveal(c, "up"));
+  })();
 
   /* ------------------------------------------------------------------ */
   /* 3. Showcase rows: copy slides from its side, screenshot uncovers    */
@@ -280,6 +401,9 @@ function init() {
       },
       0.2
     );
+
+    // The frame drifts a little against the scroll (no cropping: the whole frame moves).
+    scroll(animate(frame, { transform: ["translateY(18px)", "translateY(-18px)"] }, { ease: "linear" }), { target: row, offset: ["start end", "end start"] });
   });
 
   /* ------------------------------------------------------------------ */
@@ -330,9 +454,21 @@ function init() {
       const rows = Array.from(p.querySelectorAll("li"));
       prime(p, v);
       rows.forEach((li) => prime(li, "up"));
+      // "Before" lines get struck through one by one; "after" markers pop in.
+      const strikes = i === 0 ? rows.map(wrapStrike) : [];
+      const marks = i === 1 ? rows.map((li) => li.querySelector(":scope > span")) : [];
       once(p, () => {
         play(p, v, i * 0.12, 1);
-        rows.forEach((li, j) => play(li, "up", 0.35 + i * 0.12 + j * 0.08, 0.7));
+        rows.forEach((li, j) => {
+          const d = 0.35 + i * 0.12 + j * 0.08;
+          play(li, "up", d, 0.7);
+          if (strikes[j]) setTimeout(() => strikes[j].classList.add("is-on"), (d + 0.9 + j * 0.22) * 1000);
+          if (marks[j]) {
+            animate(marks[j], { transform: ["scale(0) rotate(-90deg)", "scale(1.6) rotate(0deg)", "scale(1) rotate(0deg)"] }, { duration: 0.6, delay: d + 0.25, ease: EASE }).then(() =>
+              marks[j].style.removeProperty("transform")
+            );
+          }
+        });
       });
     });
   });
@@ -355,16 +491,122 @@ function init() {
     kids.forEach((k) => prime(k, isCards ? "scale" : "up"));
     const badges = kids.map((k) => k.querySelector(".step-number"));
     badges.forEach((b) => b && prime(b, "pop"));
+    // Card icons draw their strokes once the card has landed.
+    const icons = kids.map((k) => k.querySelector(".w-12.h-12 svg"));
+    icons.forEach((svg) => svg && primeDraw(svg));
+    // Check / minus icons in a card's list draw one after another.
+    const listIcons = kids.map((k) => Array.from(k.querySelectorAll("li svg")));
+    listIcons.flat().forEach(primeDraw);
+    // Card grids ripple out from their centre; numbered steps keep their 1-2-3 order.
+    const ripple = isCards && kids.length >= 3 && !kids.some((k) => /step-card/.test(k.className));
 
     once(g, () => {
+      const f = ripple ? rippleFactors(kids) : null;
       kids.forEach((k, i) => {
-        play(k, isCards ? "scale" : "up", i * 0.09, 0.85);
-        if (badges[i]) play(badges[i], "pop", 0.25 + i * 0.09, 0.9, [0.34, 1.56, 0.64, 1]);
+        const d = f ? f[i] * 0.09 * kids.length * 0.6 : i * 0.09;
+        play(k, isCards ? "scale" : "up", d, 0.85);
+        if (badges[i]) play(badges[i], "pop", 0.25 + d, 0.9, [0.34, 1.56, 0.64, 1]);
+        if (icons[i]) playDraw(icons[i], 0.3 + d, 1.1);
+        listIcons[i].forEach((svg, n) => playDraw(svg, 0.7 + d + n * 0.18, 0.7));
+        const cross = k.querySelector('.w-12.h-12 svg[data-lucide="x-circle"]');
+        if (cross) {
+          const box = cross.parentElement;
+          animate(box, { transform: ["rotate(0deg)", "rotate(-12deg)", "rotate(9deg)", "rotate(-6deg)", "rotate(3deg)", "rotate(0deg)"] }, { duration: 0.6, delay: 1.5 + d }).then(() =>
+            box.style.removeProperty("transform")
+          );
+        }
       });
     });
 
     if (canHover && isCards) cardHover(kids);
   });
+
+  /* ------------------------------------------------------------------ */
+  /* 6b. Numbered steps: a line draws from step to step, last one pulses */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll("section .grid").forEach((grid) => {
+    const cards = Array.from(grid.children).filter((c) => /step-card/.test(c.className));
+    const nums = cards.map((c) => c.querySelector(".step-number"));
+    if (cards.length < 2 || nums.some((n) => !n)) return;
+    const lastNum = nums[nums.length - 1];
+    animate(lastNum, { transform: ["scale(1)", "scale(1.07)"] }, { duration: 1.4, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" });
+
+    if (!window.matchMedia("(min-width: 769px)").matches) return; // steps stack on small screens
+    const track = document.createElement("span");
+    track.className = "pm-steps__track";
+    const line = document.createElement("span");
+    line.className = "pm-steps__line";
+    [track, line].forEach((el) => el.setAttribute("aria-hidden", "true"));
+    grid.classList.add("pm-steps");
+    grid.append(track, line);
+    // centre of a step number relative to the grid (layout offsets: unaffected by entrance transforms)
+    const centre = (el) => {
+      let x = el.offsetWidth / 2;
+      let y = el.offsetHeight / 2;
+      for (let n = el; n && n !== grid; n = n.offsetParent) {
+        x += n.offsetLeft;
+        y += n.offsetTop;
+      }
+      return { x, y };
+    };
+    const place = () => {
+      const a = centre(nums[0]);
+      const b = centre(lastNum);
+      [track, line].forEach((el) => {
+        el.style.left = a.x + "px";
+        el.style.top = a.y - 1 + "px";
+        el.style.width = Math.max(0, b.x - a.x) + "px";
+      });
+    };
+    place();
+    window.addEventListener("resize", place);
+    scroll(animate(line, { transform: ["scaleX(0)", "scaleX(1)"] }, { ease: "linear" }), { target: grid, offset: ["start 80%", "start 35%"] });
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* 6c. Big card numbers (01–06) roll in like an odometer               */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll("section span.text-3xl.font-black.tracking-tighter").forEach((el, i) => {
+    const text = el.textContent.trim();
+    if (!/^\d+$/.test(text)) return;
+    const stop = inView(
+      el,
+      () => {
+        odometer(el, text, 0.35 + (i % 3) * 0.08);
+        stop();
+      },
+      { amount: 0.8 }
+    );
+  });
+
+  function odometer(el, text, delay) {
+    const h = el.getBoundingClientRect().height;
+    // the real text stays in place (invisible) so nothing moves; the rolling digits sit on top
+    const ghost = document.createElement("span");
+    ghost.style.visibility = "hidden";
+    ghost.textContent = text;
+    const over = document.createElement("span");
+    over.className = "pm-odo";
+    over.setAttribute("aria-hidden", "true");
+    const cols = Array.from(text).map((ch, k) => {
+      const col = document.createElement("span");
+      col.className = "pm-odo__col";
+      const seq = [];
+      for (let n = 0; n < 10; n++) seq.push(n);
+      for (let n = 0; n <= +ch; n++) seq.push(n);
+      col.innerHTML = seq.map((n) => `<span style="height:${h}px;line-height:${h}px">${n}</span>`).join("");
+      over.appendChild(col);
+      return { col, end: -(seq.length - 1) * h, k };
+    });
+    el.style.position = "relative";
+    el.textContent = "";
+    el.append(ghost, over);
+    const runs = cols.map(({ col, end, k }) => animate(col, { transform: ["translateY(0px)", `translateY(${end}px)`] }, { duration: 1.1 + k * 0.3, delay, ease: EASE }));
+    runs[runs.length - 1].then(() => {
+      el.textContent = text;
+      el.style.removeProperty("position");
+    });
+  }
 
   /* ------------------------------------------------------------------ */
   /* 7. Section headings: masked word reveal, eyebrow + intro around it  */
@@ -392,6 +634,23 @@ function init() {
   });
 
   /* ------------------------------------------------------------------ */
+  /* 7b. Eyebrow labels ("01 / TANTANGAN", badges) decode from noise     */
+  /* ------------------------------------------------------------------ */
+  const eyebrows = Array.from(document.querySelectorAll('[class*="tracking-[0.14em]"], .eyebrow-label'));
+  eyebrows
+    .filter((el) => !eyebrows.some((other) => other !== el && other.contains(el)))
+    .forEach((el) => {
+      const stop = inView(
+        el,
+        () => {
+          scramble(el, { delay: 0.2, duration: 0.9 });
+          stop();
+        },
+        { amount: 0.6 }
+      );
+    });
+
+  /* ------------------------------------------------------------------ */
   /* 8. Micro-interactions (mouse only)                                  */
   /* ------------------------------------------------------------------ */
   function cardHover(cards) {
@@ -407,6 +666,21 @@ function init() {
           card.style.setProperty("--pm-y", `${e.clientY - r.top}px`);
         });
       }
+      if (card.tagName === "ARTICLE") {
+        // Preview cards tilt towards the cursor instead of lifting.
+        card.addEventListener("pointermove", (e) => {
+          if (card.style.opacity) return; // entrance still running
+          const r = card.getBoundingClientRect();
+          const rx = ((e.clientY - r.top) / r.height - 0.5) * -7;
+          const ry = ((e.clientX - r.left) / r.width - 0.5) * 7;
+          animate(card, { transform: `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)` }, { duration: 0.25, ease: EASE });
+        });
+        card.addEventListener("pointerleave", () => {
+          if (card.style.opacity) return;
+          animate(card, { transform: "perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px)" }, SPRING).then(() => card.style.removeProperty("transform"));
+        });
+        return;
+      }
       hover(card, () => {
         // Skip while the entrance animation still owns the card.
         if (card.style.opacity || card.style.transform) return;
@@ -420,10 +694,72 @@ function init() {
     });
   }
 
+  const sections = document.querySelectorAll("section");
+  const last = sections[sections.length - 1];
+
+  // Closing section: animated gradient (where it has one), cursor glow (solid brand colour), button sheen.
+  if (last) {
+    if (last.classList.contains("gradient-bg")) {
+      last.classList.add("pm-gradient");
+      inView(last, () => {
+        last.classList.add("is-running");
+        return () => last.classList.remove("is-running");
+      });
+    }
+    if (canHover && last.classList.contains("bg-brand")) {
+      last.classList.add("pm-spot", "pm-spot--lg");
+      last.addEventListener("pointermove", (e) => {
+        const r = last.getBoundingClientRect();
+        last.style.setProperty("--pm-x", `${e.clientX - r.left}px`);
+        last.style.setProperty("--pm-y", `${e.clientY - r.top}px`);
+      });
+    }
+    last.querySelectorAll("a").forEach((a) => a.classList.add("pm-sheen"));
+  }
+
+  // Scroll progress bar (same idea as the homepage).
+  const bar = document.createElement("span");
+  bar.className = "pm-progress";
+  bar.setAttribute("aria-hidden", "true");
+  document.body.appendChild(bar);
+  scroll(animate(bar, { transform: ["scaleX(0)", "scaleX(1)"] }, { ease: "linear" }));
+
+  // Desktop nav: one indicator slides to the active link instead of each link switching on/off.
+  (function slidingNav() {
+    const pill = document.querySelector("header > div > nav");
+    const under = document.querySelector(".desktop-nav");
+    const nav = pill || under;
+    if (!nav) return;
+    const cls = pill ? "nav-active" : "is-active";
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const ind = document.createElement("span");
+    ind.className = "pm-nav__ind" + (pill ? "" : " pm-nav__ind--line");
+    ind.setAttribute("aria-hidden", "true");
+    nav.classList.add("pm-nav");
+    nav.prepend(ind);
+    let shown = false;
+    const update = () => {
+      const a = nav.querySelector("a." + cls);
+      if (!a || !wide.matches) {
+        ind.style.opacity = "0";
+        shown = false;
+        return;
+      }
+      // first appearance: jump into place, then fade in; afterwards slide
+      ind.style.transitionProperty = shown ? "" : "opacity";
+      ind.style.width = a.offsetWidth + "px";
+      ind.style.height = (pill ? a.offsetHeight : 2) + "px";
+      ind.style.transform = `translate(${a.offsetLeft}px, ${pill ? a.offsetTop : a.offsetTop + a.offsetHeight - 2}px)`;
+      ind.style.opacity = "1";
+      shown = true;
+    };
+    new MutationObserver(update).observe(nav, { attributes: true, attributeFilter: ["class"], subtree: true });
+    window.addEventListener("resize", update);
+    update();
+  })();
+
   if (canHover) {
     // Magnetic CTAs: hero buttons and the closing call to action.
-    const sections = document.querySelectorAll("section");
-    const last = sections[sections.length - 1];
     const ctas = [
       ...(hero ? hero.querySelectorAll('a[class*="py-3"], a[class*="py-4"]') : []),
       ...(last ? last.querySelectorAll("a") : []),
@@ -442,6 +778,43 @@ function init() {
   }
 }
 
+/* Wrap an <li>'s own text in an inline span that a line can be drawn through. */
+function wrapStrike(li) {
+  const inner = document.createElement("span");
+  inner.className = "pm-strike";
+  Array.from(li.childNodes).forEach((n) => {
+    if (n.nodeType === Node.TEXT_NODE && n.textContent.trim()) inner.appendChild(n);
+  });
+  if (!inner.childNodes.length) return null;
+  const outer = document.createElement("span"); // the flex item; the inline span inside wraps per line
+  outer.appendChild(inner);
+  li.appendChild(outer);
+  return inner;
+}
+
+/* A light sweeps once across words (used for the gold italic headline). */
+function sheen(words, delay) {
+  if (!words.length) return;
+  setTimeout(() => {
+    words.forEach((w, k) => {
+      if (!w.animate) return;
+      const c = getComputedStyle(w).color;
+      const props = ["background-image", "background-size", "-webkit-background-clip", "background-clip", "-webkit-text-fill-color", "background-position"];
+      w.style.backgroundImage = `linear-gradient(100deg, ${c} 35%, #fff6df 50%, ${c} 65%)`;
+      w.style.backgroundSize = "300% 100%";
+      w.style.backgroundPosition = "100% 0";
+      w.style.webkitBackgroundClip = "text";
+      w.style.backgroundClip = "text";
+      w.style.webkitTextFillColor = "transparent";
+      const a = w.animate([{ backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0" }], { duration: 1100, delay: k * 130, easing: "ease-in-out", fill: "both" });
+      a.onfinish = () => {
+        props.forEach((p) => w.style.removeProperty(p));
+        a.cancel();
+      };
+    });
+  }, delay * 1000);
+}
+
 function injectStyles() {
   const css = `
     .pm-mask{display:inline-block;overflow:hidden;vertical-align:top;padding:.25em .12em .14em;margin:-.25em -.12em -.14em}
@@ -452,6 +825,59 @@ function injectStyles() {
     .pm-spot::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s ease;
       background:radial-gradient(280px circle at var(--pm-x,50%) var(--pm-y,50%),rgba(255,255,255,.07),transparent 70%)}
     .pm-spot:hover::after{opacity:1}
+    .pm-spot--lg::after{background:radial-gradient(520px circle at var(--pm-x,50%) var(--pm-y,50%),rgba(255,255,255,.16),transparent 70%)}
+
+    .pm-progress{position:fixed;left:0;right:0;top:0;height:3px;z-index:80;pointer-events:none;transform-origin:left center;transform:scaleX(0);
+      background:var(--brand,var(--blue,var(--brand-gold,#2563eb)))}
+
+    .pm-nav__ind{display:none}
+    @media (min-width:1024px){
+      .pm-nav{position:relative}
+      .pm-nav a{position:relative;z-index:1}
+      .pm-nav a.nav-active{background:transparent !important}
+      .pm-nav a.is-active{border-bottom-color:transparent !important}
+      .pm-nav__ind{display:block;position:absolute;left:0;top:0;border-radius:999px;opacity:0;pointer-events:none;
+        background:var(--brand-soft,var(--bg-paper,#e8edff));
+        transition:transform .45s cubic-bezier(.22,1,.36,1),width .45s cubic-bezier(.22,1,.36,1),opacity .25s ease}
+      .pm-nav__ind--line{border-radius:2px;background:var(--blue,#2563eb)}
+    }
+
+    /* Pinned showcase. Base rules = narrow fallback (pairs stay together via inline order). */
+    .pm-sticky{display:flex;flex-direction:column;gap:3.5rem}
+    .pm-sticky > *, .pm-sticky__copy, .pm-sticky__frame{margin:0 !important}
+    .pm-sticky__col,.pm-sticky__stage{display:contents}
+    @media (min-width:1024px) and (min-height:700px){
+      .pm-sticky{display:grid;grid-template-columns:0.85fr 1.15fr;gap:3.5rem;align-items:start}
+      .pm-sticky__col{display:flex;flex-direction:column}
+      .pm-sticky__copy{min-height:62vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .45s ease}
+      .pm-sticky__copy.is-active{opacity:1}
+      .pm-sticky__stage{display:grid;align-items:center;position:sticky;top:var(--pm-stage-top,120px)}
+      .pm-sticky__frame{grid-area:1/1;opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;
+        transition:opacity .5s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+      .pm-sticky__frame.is-active{opacity:1;transform:none;pointer-events:auto}
+    }
+
+    .pm-strike{background:linear-gradient(currentColor,currentColor) no-repeat 0 56%/0% 1.5px;transition:background-size .6s cubic-bezier(.65,0,.35,1)}
+    .pm-strike.is-on{background-size:100% 1.5px}
+
+    .pm-steps{isolation:isolate}
+    .pm-steps__track,.pm-steps__line{position:absolute;height:2px;border-radius:2px;z-index:-1;pointer-events:none}
+    .pm-steps__track{background:rgba(15,23,42,.1)}
+    .pm-steps__line{background:linear-gradient(90deg,var(--blue,#2563eb),var(--blue-2,#3b82f6));transform-origin:left center;transform:scaleX(0)}
+
+    .pm-odo{position:absolute;right:0;top:0;display:flex;overflow:hidden;white-space:nowrap}
+    .pm-odo__col{display:block}
+    .pm-odo__col > span{display:block}
+
+    .pm-gradient{background-image:linear-gradient(135deg,var(--blue),var(--blue-2),var(--blue)) !important;background-size:300% 300% !important;
+      animation:pm-grad 12s ease-in-out infinite alternate;animation-play-state:paused}
+    .pm-gradient.is-running{animation-play-state:running}
+    @keyframes pm-grad{from{background-position:0% 50%}to{background-position:100% 50%}}
+
+    .pm-sheen{position:relative;overflow:hidden}
+    .pm-sheen::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;transform:skewX(-20deg);pointer-events:none;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
+    .pm-sheen:hover::after{left:125%;transition:left .7s ease}
   `;
   const style = document.createElement("style");
   style.textContent = css;

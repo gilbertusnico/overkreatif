@@ -548,7 +548,8 @@
     </style>
     <!-- Motion bootstrap: hide the hero until ../js/products-motion.min.js has primed it
          (never under reduced motion; un-hidden after 3s if the bundle doesn't boot). -->
-    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}</style>
+    <style>html.pm-ready [data-pm-hero]:not([data-pm-ready]){opacity:0}
+    @media (prefers-reduced-motion: no-preference){ @view-transition { navigation: auto; } }</style>
     <script>
       (function(){
         var d = document.documentElement;
@@ -636,6 +637,14 @@
                 <div class="col-span-2 md:col-span-1">
                     <p class="text-3xl font-extrabold text-slate-900">QRIS & VA</p>
                     <p class="text-sm font-medium text-slate-500 mt-1">Pilihan pembayaran online</p>
+                </div>
+            </div>
+        </div>
+        <!-- Hero product screenshot (same frame treatment as StockFolio / RentFolio) -->
+        <div class="mx-auto mt-14 max-w-6xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="rounded-2xl border border-slate-200 bg-white p-2 sm:p-3 shadow-xl shadow-blue-500/10">
+                <div class="overflow-hidden rounded-xl border border-slate-100">
+                    <img src="assets/dashboard-billfolio-1400.webp" srcset="assets/dashboard-billfolio-800.webp 800w, assets/dashboard-billfolio-1400.webp 1400w" sizes="(min-width: 1152px) 1100px, calc(100vw - 3rem)" width="1723" height="913" decoding="async" alt="Dasbor BillFolio dengan ringkasan pendapatan, status invoice, dan aktivitas pembayaran terbaru" class="block w-full h-auto">
                 </div>
             </div>
         </div>
