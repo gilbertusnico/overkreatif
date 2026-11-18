@@ -308,6 +308,8 @@ function init() {
     if (dots.length > 1) {
       const centre = (d) => d.offsetParent.offsetTop + d.offsetTop + d.offsetHeight / 2;
       const place = () => {
+        // this rail is display:none at some widths (no offsetParent): nothing to measure then
+        if (!dots[0].offsetParent || !dots[dots.length - 1].offsetParent) return;
         const top = centre(dots[0]);
         line.style.top = top + "px";
         line.style.bottom = "auto";

@@ -382,6 +382,9 @@ function init() {
     handled.add(frame);
     frame.style.clipPath = "inset(12% 10% 12% 10% round 16px)";
     frame.style.opacity = "0";
+    // clip-path only hides the zoomed image visually; overflow:clip also keeps it out of the
+    // page's scroll width (otherwise phones could scroll sideways for a moment)
+    frame.style.overflow = "clip";
     img.style.transform = "scale(1.16)";
 
     once(
@@ -396,7 +399,7 @@ function init() {
         // Frame stays clipped until the image has settled, so the zoom never spills out.
         animate(img, { transform: ["scale(1.16)", "scale(1)"] }, { duration: 1.3, ease: EASE }).then(() => {
           img.style.removeProperty("transform");
-          ["clip-path", "opacity"].forEach((p) => frame.style.removeProperty(p));
+          ["clip-path", "opacity", "overflow"].forEach((p) => frame.style.removeProperty(p));
         });
       },
       0.2

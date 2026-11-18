@@ -114,9 +114,16 @@ export function scramble(el, { delay = 0, duration = 0.9 } = {}) {
   const display = getComputedStyle(el).display;
   const parentDisplay = el.parentElement ? getComputedStyle(el.parentElement).display : "";
   const inline = display.startsWith("inline") || /flex|grid/.test(parentDisplay);
+  // Text that already wraps (e.g. a long badge on a narrow phone) must keep wrapping, or it
+  // would run off the screen while scrambling: hold its box size instead of forcing one line.
+  const box = el.getBoundingClientRect();
+  const cs = getComputedStyle(el);
+  const lineH = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.25;
+  const multiLine = box.height > lineH * 1.5;
   if (inline) {
-    el.style.width = el.getBoundingClientRect().width + "px";
-    el.style.whiteSpace = "nowrap";
+    el.style.width = box.width + "px";
+    if (multiLine) el.style.height = box.height + "px";
+    else el.style.whiteSpace = "nowrap";
   }
 
   const pick = (set) => set[(Math.random() * set.length) | 0];
@@ -138,6 +145,7 @@ export function scramble(el, { delay = 0, duration = 0.9 } = {}) {
     nodes.forEach((x) => (x.node.textContent = x.text));
     if (inline) {
       el.style.removeProperty("width");
+      el.style.removeProperty("height");
       el.style.removeProperty("white-space");
     }
   };

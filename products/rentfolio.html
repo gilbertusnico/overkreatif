@@ -241,6 +241,8 @@
       })();
     </script>
     <link rel="modulepreload" href="../js/products-motion.min.js" />
+    <!-- Footer links: bigger touch area on touch screens, same layout (padding cancelled by margin) -->
+    <style>@media (pointer:coarse){footer a:not([class*="flex"]){display:inline-block;padding-block:5px;margin-block:-5px}}</style>
 </head>
 <body class="antialiased">
 
