@@ -14,7 +14,7 @@
  * has primed its first frame, so nothing flashes.
  */
 import { animate as motionAnimate, scroll, inView, hover } from "motion";
-import { primeDraw, playDraw, rippleFactors, scramble } from "./fx.js";
+import { primeDraw, playDraw, drawInView, rippleFactors, scramble } from "./fx.js";
 import { initLightbox } from "./lightbox.js";
 
 /* Motion commits an animation's final values as inline styles one frame after its
@@ -382,6 +382,9 @@ function init() {
     handled.add(frame);
     frame.style.clipPath = "inset(12% 10% 12% 10% round 16px)";
     frame.style.opacity = "0";
+    // clip-path only hides the zoomed image visually; overflow:clip also keeps it out of the
+    // page's scroll width (otherwise phones could scroll sideways for a moment)
+    frame.style.overflow = "clip";
     img.style.transform = "scale(1.16)";
 
     once(
@@ -396,7 +399,7 @@ function init() {
         // Frame stays clipped until the image has settled, so the zoom never spills out.
         animate(img, { transform: ["scale(1.16)", "scale(1)"] }, { duration: 1.3, ease: EASE }).then(() => {
           img.style.removeProperty("transform");
-          ["clip-path", "opacity"].forEach((p) => frame.style.removeProperty(p));
+          ["clip-path", "opacity", "overflow"].forEach((p) => frame.style.removeProperty(p));
         });
       },
       0.2
@@ -506,8 +509,14 @@ function init() {
         const d = f ? f[i] * 0.09 * kids.length * 0.6 : i * 0.09;
         play(k, isCards ? "scale" : "up", d, 0.85);
         if (badges[i]) play(badges[i], "pop", 0.25 + d, 0.9, [0.34, 1.56, 0.64, 1]);
-        if (icons[i]) playDraw(icons[i], 0.3 + d, 1.1);
-        listIcons[i].forEach((svg, n) => playDraw(svg, 0.7 + d + n * 0.18, 0.7));
+        if (icons[i]) {
+          playDraw(icons[i], 0.3 + d, 1.1);
+          drawInView(icons[i], { first: false, duration: 1.1 });
+        }
+        listIcons[i].forEach((svg, n) => {
+          playDraw(svg, 0.7 + d + n * 0.18, 0.7);
+          drawInView(svg, { first: false, delay: 0.1 + n * 0.12, duration: 0.7 });
+        });
         const cross = k.querySelector('.w-12.h-12 svg[data-lucide="x-circle"]');
         if (cross) {
           const box = cross.parentElement;

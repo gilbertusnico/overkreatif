@@ -12,8 +12,17 @@
 const DASH = 300;
 
 export function primeDraw(svg) {
+  stopDraw(svg);
   svg.style.strokeDasharray = String(DASH);
   svg.style.strokeDashoffset = String(DASH);
+}
+
+function stopDraw(svg) {
+  if (svg._draw) {
+    svg._draw.onfinish = null;
+    svg._draw.cancel();
+    svg._draw = null;
+  }
 }
 
 export function playDraw(svg, delay = 0, duration = 1.1) {
@@ -21,6 +30,7 @@ export function playDraw(svg, delay = 0, duration = 1.1) {
     svg.style.removeProperty("stroke-dasharray");
     svg.style.removeProperty("stroke-dashoffset");
   };
+  stopDraw(svg);
   if (!svg.animate) return clear();
   const anim = svg.animate([{ strokeDashoffset: DASH }, { strokeDashoffset: 0 }], {
     duration: duration * 1000,
@@ -28,10 +38,41 @@ export function playDraw(svg, delay = 0, duration = 1.1) {
     easing: "cubic-bezier(0.65, 0, 0.35, 1)",
     fill: "both",
   });
+  svg._draw = anim;
   anim.onfinish = () => {
     clear();
     anim.cancel();
+    svg._draw = null;
   };
+}
+
+// Draw the icon every time it scrolls into view, not just the first time: once it has left
+// the viewport completely it is quietly reset (off-screen, so nobody sees it vanish), and the
+// next time at least half of it is visible it draws again.
+// With { first: false } the caller handles the first draw (e.g. timed with a card reveal) and
+// this only takes over for later visits.
+export function drawInView(svg, { delay = 0.15, duration = 1, first = true } = {}) {
+  let armed = first;
+  if (first) primeDraw(svg);
+  if (!("IntersectionObserver" in window)) {
+    if (first) playDraw(svg, delay, duration);
+    return;
+  }
+  new IntersectionObserver(
+    (entries) => {
+      const e = entries[entries.length - 1];
+      if (!e.isIntersecting) {
+        if (!armed) {
+          armed = true;
+          primeDraw(svg);
+        }
+      } else if (armed && e.intersectionRatio >= 0.5) {
+        armed = false;
+        playDraw(svg, delay, duration);
+      }
+    },
+    { threshold: [0, 0.5] }
+  ).observe(svg);
 }
 
 /* ------------------------------------------------------------------ */
@@ -73,9 +114,16 @@ export function scramble(el, { delay = 0, duration = 0.9 } = {}) {
   const display = getComputedStyle(el).display;
   const parentDisplay = el.parentElement ? getComputedStyle(el.parentElement).display : "";
   const inline = display.startsWith("inline") || /flex|grid/.test(parentDisplay);
+  // Text that already wraps (e.g. a long badge on a narrow phone) must keep wrapping, or it
+  // would run off the screen while scrambling: hold its box size instead of forcing one line.
+  const box = el.getBoundingClientRect();
+  const cs = getComputedStyle(el);
+  const lineH = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.25;
+  const multiLine = box.height > lineH * 1.5;
   if (inline) {
-    el.style.width = el.getBoundingClientRect().width + "px";
-    el.style.whiteSpace = "nowrap";
+    el.style.width = box.width + "px";
+    if (multiLine) el.style.height = box.height + "px";
+    else el.style.whiteSpace = "nowrap";
   }
 
   const pick = (set) => set[(Math.random() * set.length) | 0];
@@ -97,6 +145,7 @@ export function scramble(el, { delay = 0, duration = 0.9 } = {}) {
     nodes.forEach((x) => (x.node.textContent = x.text));
     if (inline) {
       el.style.removeProperty("width");
+      el.style.removeProperty("height");
       el.style.removeProperty("white-space");
     }
   };

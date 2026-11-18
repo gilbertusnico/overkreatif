@@ -14,7 +14,7 @@
  * file fails to load), so content is never stuck invisible.
  */
 import { animate as motionAnimate, scroll, inView, hover } from "motion";
-import { primeDraw, playDraw, rippleFactors, scramble } from "./fx.js";
+import { drawInView, rippleFactors, scramble } from "./fx.js";
 import { initLightbox } from "./lightbox.js";
 
 /* Motion commits an animation's final values as inline styles one frame after its
@@ -308,6 +308,8 @@ function init() {
     if (dots.length > 1) {
       const centre = (d) => d.offsetParent.offsetTop + d.offsetTop + d.offsetHeight / 2;
       const place = () => {
+        // this rail is display:none at some widths (no offsetParent): nothing to measure then
+        if (!dots[0].offsetParent || !dots[dots.length - 1].offsetParent) return;
         const top = centre(dots[0]);
         line.style.top = top + "px";
         line.style.bottom = "auto";
@@ -337,15 +339,7 @@ function init() {
   document.querySelectorAll(".poin-service svg.icon, #about svg.icon, #system svg.icon").forEach((svg) => {
     // icons in the layout that is hidden at this width (desktop vs mobile timeline) stay as they are
     if (!svg.getClientRects().length) return;
-    primeDraw(svg);
-    const stop = inView(
-      svg,
-      () => {
-        playDraw(svg, 0.3, 1.1);
-        stop();
-      },
-      { amount: 0.5 }
-    );
+    drawInView(svg, { delay: 0.3, duration: 1.1 });
   });
 
   /* ------------------------------------------------------------------ */
