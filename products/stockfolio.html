@@ -346,6 +346,17 @@
       })();
     </script>
     <link rel="modulepreload" href="../js/products-motion.min.js" />
+    <!-- Size-matched fallbacks for Nunito (Arial on desktop, Roboto on Android) so the page barely
+         moves when the web font swaps in; the hero title width is in em instead of ch for the same reason
+         (16ch of Nunito Black = 11.375em, but "ch" changes with whichever font is showing). -->
+    <style>
+      @font-face{font-family:"Nunito Fallback";src:local("Arial"),local("ArialMT");font-weight:100 649;size-adjust:100.4%;ascent-override:100.7%;descent-override:35.2%;line-gap-override:0%}
+      @font-face{font-family:"Nunito Fallback";src:local("Arial Bold"),local("Arial-BoldMT");font-weight:650 1000;size-adjust:101.5%;ascent-override:99.6%;descent-override:34.8%;line-gap-override:0%}
+      @font-face{font-family:"Nunito Fallback R";src:local("Roboto"),local("Roboto-Regular");font-weight:100 649;size-adjust:101.4%;ascent-override:99.7%;descent-override:34.8%;line-gap-override:0%}
+      @font-face{font-family:"Nunito Fallback R";src:local("Roboto Bold"),local("Roboto-Bold");font-weight:650 1000;size-adjust:107.5%;ascent-override:94%;descent-override:32.8%;line-gap-override:0%}
+      :root{--font-sans:Nunito,"Nunito Fallback","Nunito Fallback R",ui-sans-serif,system-ui,sans-serif}
+      h1.display-xl{max-width:11.375em}
+    </style>
     <!-- Footer links: bigger touch area on touch screens, same layout (padding cancelled by margin) -->
     <style>@media (pointer:coarse){footer a:not([class*="flex"]){display:inline-block;padding-block:5px;margin-block:-5px}}</style>
 </head>
